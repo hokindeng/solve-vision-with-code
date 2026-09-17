@@ -5,7 +5,7 @@ A coding agent is given the first frame and the prompt of a VBVR-Pro-Bench insta
 that renders the answer video; the video is scored by the benchmark's official rule-based evaluator, so
 its score sits on the same leaderboard as the video generation models. This repository holds the agent
 harness (`bench/`), the per-lane evaluator results and run statistics behind every number in the paper,
-and the paper source (`paper/`). Project page: https://video-reason.com.
+and the paper source (`paper/`). Project page: https://hokindeng.com.
 
 ## Results
 
