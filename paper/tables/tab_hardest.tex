@@ -1,10 +1,10 @@
 % Generated from bench/paper/table4_per_task_closed.csv (per-task mean over 5 instances; category from the evaluator results).
-\begin{table*}[t]
+\begin{table}[!t]
 \centering
-\caption{The twelve hardest tasks for the closed agents: lowest mean of the three per-task scores (each a mean over 5 instances). Split is in-domain (ID) or out-of-domain (OOD); category is the benchmark's. \cref{sec:where-fail} groups them by cause.}
+\caption{The twelve hardest tasks for the closed agents, ranked by the mean of the three per-task scores (each a mean over 5 instances). Split is in-domain (ID) or out-of-domain (OOD), the category is the benchmark's, and eleven of the twelve are in-domain; \cref{sec:where-fail} groups them by cause.}
 \label{tab:hardest}
 \small
-\setlength{\tabcolsep}{5pt}
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{llllrrrr}
 \toprule
 Task & Name & Split & Category & Codex & Claude & Gemini & Mean \\
@@ -23,4 +23,4 @@ G-15 & grid avoid obstacles & ID & Spatiality & 0.41 & \textbf{0.81} & 0.61 & 0.
 O-23 & domino chain branch path prediction & ID & Knowledge & \textbf{0.83} & 0.48 & 0.59 & 0.63 \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}

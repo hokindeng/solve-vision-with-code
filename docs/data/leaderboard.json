@@ -1,0 +1,907 @@
+{
+ "rows": [
+  {
+   "model": "Codex/gpt-6-astra",
+   "kind": "coding agent",
+   "overall": 0.9228340214922199,
+   "in_domain": 0.8785477777712619,
+   "out_of_domain": 0.967120265213178,
+   "produced": 500
+  },
+  {
+   "model": "Claude Code/Fable 5.1",
+   "kind": "coding agent",
+   "overall": 0.8942984694780162,
+   "in_domain": 0.8304484867522912,
+   "out_of_domain": 0.9581484522037411,
+   "produced": 500
+  },
+  {
+   "model": "Gemini CLI/3.1 Pro",
+   "kind": "coding agent",
+   "overall": 0.892962658855426,
+   "in_domain": 0.8262871915876808,
+   "out_of_domain": 0.9596381261231712,
+   "produced": 500
+  },
+  {
+   "model": "VBVR-Pro-Wan2.2-I2V-A14B (RL-trained video model)",
+   "kind": "video model",
+   "overall": 0.67,
+   "in_domain": 0.808,
+   "out_of_domain": 0.532,
+   "produced": 500
+  },
+  {
+   "model": "GLM-5",
+   "kind": "coding agent (open weights)",
+   "overall": 0.5719026320559439,
+   "in_domain": 0.47938984243162674,
+   "out_of_domain": 0.6644154216802611,
+   "produced": 500
+  },
+  {
+   "model": "VBVR-Pro-Wan2.1-I2V-14B",
+   "kind": "video model",
+   "overall": 0.562,
+   "in_domain": 0.73,
+   "out_of_domain": 0.395,
+   "produced": 500
+  },
+  {
+   "model": "Kimi K2.5",
+   "kind": "coding agent (open weights)",
+   "overall": 0.5573167396526539,
+   "in_domain": 0.4543154363392507,
+   "out_of_domain": 0.6603180429660572,
+   "produced": 500
+  },
+  {
+   "model": "VBVR-Wan2.2",
+   "kind": "video model",
+   "overall": 0.517,
+   "in_domain": 0.548,
+   "out_of_domain": 0.486,
+   "produced": 500
+  },
+  {
+   "model": "Seedance 2.0",
+   "kind": "video model",
+   "overall": 0.499,
+   "in_domain": 0.451,
+   "out_of_domain": 0.547,
+   "produced": 500
+  },
+  {
+   "model": "VBVR-Pro-Wan2.2-TI2V-5B",
+   "kind": "video model",
+   "overall": 0.47,
+   "in_domain": 0.641,
+   "out_of_domain": 0.3,
+   "produced": 500
+  },
+  {
+   "model": "MiniMax M2.5",
+   "kind": "coding agent (open weights)",
+   "overall": 0.4507280115355934,
+   "in_domain": 0.38615404521615004,
+   "out_of_domain": 0.5153019778550367,
+   "produced": 500
+  },
+  {
+   "model": "VBVR-Pro-LTX2.3",
+   "kind": "video model",
+   "overall": 0.425,
+   "in_domain": 0.527,
+   "out_of_domain": 0.324,
+   "produced": 500
+  },
+  {
+   "model": "Kling VIDEO 3.0",
+   "kind": "video model",
+   "overall": 0.392,
+   "in_domain": 0.356,
+   "out_of_domain": 0.427,
+   "produced": 500
+  },
+  {
+   "model": "DeepSeek V3.2",
+   "kind": "coding agent (open weights)",
+   "overall": 0.37787808823056906,
+   "in_domain": 0.30338628762519393,
+   "out_of_domain": 0.45236988883594415,
+   "produced": 500
+  },
+  {
+   "model": "Devstral 2 123B",
+   "kind": "coding agent (open weights)",
+   "overall": 0.3502324134526621,
+   "in_domain": 0.274780774244307,
+   "out_of_domain": 0.42568405266101716,
+   "produced": 500
+  },
+  {
+   "model": "Kimi K2 Thinking",
+   "kind": "coding agent (open weights)",
+   "overall": 0.31261468887547966,
+   "in_domain": 0.2182770065212306,
+   "out_of_domain": 0.40695237122972866,
+   "produced": 500
+  },
+  {
+   "model": "Veo 3.1",
+   "kind": "video model",
+   "overall": 0.309,
+   "in_domain": 0.312,
+   "out_of_domain": 0.305,
+   "produced": 500
+  },
+  {
+   "model": "gpt-oss-120b",
+   "kind": "coding agent (open weights)",
+   "overall": 0.269979532640855,
+   "in_domain": 0.19574178888067786,
+   "out_of_domain": 0.34421727640103217,
+   "produced": 500
+  },
+  {
+   "model": "Qwen3-Coder-Next",
+   "kind": "coding agent (open weights)",
+   "overall": 0.26386263708262314,
+   "in_domain": 0.2180836598216,
+   "out_of_domain": 0.30964161434364634,
+   "produced": 500
+  },
+  {
+   "model": "Nemotron Super 3 120B",
+   "kind": "coding agent (open weights)",
+   "overall": 0.20026881115024145,
+   "in_domain": 0.13925381311945187,
+   "out_of_domain": 0.261283809181031,
+   "produced": 500
+  },
+  {
+   "model": "Wan2.2-I2V-A14B",
+   "kind": "video model",
+   "overall": 0.182,
+   "in_domain": 0.157,
+   "out_of_domain": 0.207,
+   "produced": 500
+  },
+  {
+   "model": "Qwen3-Coder-30B-A3B",
+   "kind": "coding agent (open weights)",
+   "overall": 0.14268714094284174,
+   "in_domain": 0.09927155985820778,
+   "out_of_domain": 0.18610272202747574,
+   "produced": 500
+  },
+  {
+   "model": "Mistral Large 3 675B",
+   "kind": "coding agent (open weights)",
+   "overall": 0.12740080582304567,
+   "in_domain": 0.078581086469421,
+   "out_of_domain": 0.17622052517667033,
+   "produced": 500
+  },
+  {
+   "model": "LTX-2.3-I2AV",
+   "kind": "video model",
+   "overall": 0.112,
+   "in_domain": 0.106,
+   "out_of_domain": 0.119,
+   "produced": 500
+  },
+  {
+   "model": "GLM-4.7-Flash",
+   "kind": "coding agent (open weights)",
+   "overall": 0.10393438722775551,
+   "in_domain": 0.0811002046021337,
+   "out_of_domain": 0.1267685698533773,
+   "produced": 500
+  },
+  {
+   "model": "Wan2.1-I2V-14B-720P",
+   "kind": "video model",
+   "overall": 0.1,
+   "in_domain": 0.105,
+   "out_of_domain": 0.095,
+   "produced": 500
+  },
+  {
+   "model": "gpt-oss-20b",
+   "kind": "coding agent (open weights)",
+   "overall": 0.07874994355361471,
+   "in_domain": 0.07453094239491015,
+   "out_of_domain": 0.08296894471231928,
+   "produced": 500
+  },
+  {
+   "model": "Qwen3-Next-80B-A3B",
+   "kind": "coding agent (open weights)",
+   "overall": 0.06975075254444844,
+   "in_domain": 0.034115155660149325,
+   "out_of_domain": 0.10538634942874756,
+   "produced": 500
+  },
+  {
+   "model": "Llama 4 Scout",
+   "kind": "coding agent (open weights)",
+   "overall": 0.04930328944812509,
+   "in_domain": 0.04032503410470565,
+   "out_of_domain": 0.05828154479154454,
+   "produced": 500
+  },
+  {
+   "model": "Nemotron Nano 3 30B",
+   "kind": "coding agent (open weights)",
+   "overall": 0.027756254109460185,
+   "in_domain": 0.026128416123987034,
+   "out_of_domain": 0.029384092094933333,
+   "produced": 500
+  },
+  {
+   "model": "Qwen3-VL-235B-A22B",
+   "kind": "coding agent (open weights)",
+   "overall": 0.024693009399915155,
+   "in_domain": 0.02167044994634091,
+   "out_of_domain": 0.0277155688534894,
+   "produced": 500
+  },
+  {
+   "model": "Qwen3-32B",
+   "kind": "coding agent (open weights)",
+   "overall": 0.004418163932493774,
+   "in_domain": 0.005852054141926439,
+   "out_of_domain": 0.0029842737230611088,
+   "produced": 500
+  },
+  {
+   "model": "Llama 4 Maverick",
+   "kind": "coding agent (open weights)",
+   "overall": 0.0010588313091234726,
+   "in_domain": 0.0005176626182469451,
+   "out_of_domain": 0.0016,
+   "produced": 500
+  },
+  {
+   "model": "OpenCode \u00d7 Gemma 3 27B (open weights, Bedrock)",
+   "kind": "coding agent (open weights)",
+   "overall": 0.0,
+   "in_domain": 0.0,
+   "out_of_domain": 0.0,
+   "produced": 0
+  },
+  {
+   "model": "OpenCode \u00d7 Gemma 3 12B (open weights, Bedrock)",
+   "kind": "coding agent (open weights)",
+   "overall": 0.0,
+   "in_domain": 0.0,
+   "out_of_domain": 0.0,
+   "produced": 0
+  },
+  {
+   "model": "OpenCode \u00d7 Magistral Small (open weights, Bedrock)",
+   "kind": "coding agent (open weights)",
+   "overall": 0.0,
+   "in_domain": 0.0,
+   "out_of_domain": 0.0,
+   "produced": 0
+  },
+  {
+   "model": "OpenCode \u00d7 Llama 3.3 70B (open weights, Bedrock via converse proxy)",
+   "kind": "coding agent (open weights)",
+   "overall": 0.0,
+   "in_domain": 0.0,
+   "out_of_domain": 0.0,
+   "produced": 0
+  }
+ ],
+ "categories": [
+  {
+   "model": "Codex/gpt-6-astra",
+   "Abstraction": 0.9572928561791345,
+   "Perception": 0.9529136170071569,
+   "Spatiality": 0.903401632831021,
+   "Transformation": 0.9016378592743506,
+   "Knowledge": 0.8629167911555102,
+   "overall": 0.9228340214922199
+  },
+  {
+   "model": "Claude Code/Fable 5.1",
+   "Abstraction": 0.8377223848010434,
+   "Perception": 0.9567465972610081,
+   "Spatiality": 0.9079344156338991,
+   "Transformation": 0.9431603899364047,
+   "Knowledge": 0.8343688039520032,
+   "overall": 0.8942984694780162
+  },
+  {
+   "model": "Gemini CLI/3.1 Pro",
+   "Abstraction": 0.8775355519040935,
+   "Perception": 0.9716197654572782,
+   "Spatiality": 0.8160657072117338,
+   "Transformation": 0.8943492606695239,
+   "Knowledge": 0.8612253269323392,
+   "overall": 0.892962658855426
+  },
+  {
+   "model": "GLM-5",
+   "Abstraction": 0.4782214060376623,
+   "Perception": 0.7476151970970705,
+   "Spatiality": 0.4913769853212721,
+   "Transformation": 0.568969837270991,
+   "Knowledge": 0.5058859328180324,
+   "overall": 0.5719026320559439
+  },
+  {
+   "model": "Kimi K2.5",
+   "Abstraction": 0.42666081820598806,
+   "Perception": 0.7265120223293304,
+   "Spatiality": 0.5270701423647669,
+   "Transformation": 0.5820854049507211,
+   "Knowledge": 0.4897194604026063,
+   "overall": 0.5573167396526539
+  },
+  {
+   "model": "MiniMax M2.5",
+   "Abstraction": 0.3470778367718666,
+   "Perception": 0.6329500889195143,
+   "Spatiality": 0.41245831618055273,
+   "Transformation": 0.4392869557369475,
+   "Knowledge": 0.3580250640412664,
+   "overall": 0.4507280115355934
+  },
+  {
+   "model": "DeepSeek V3.2",
+   "Abstraction": 0.30764808344892663,
+   "Perception": 0.5384904710945789,
+   "Spatiality": 0.35803265991040123,
+   "Transformation": 0.28834822981496716,
+   "Knowledge": 0.3068511699915528,
+   "overall": 0.37787808823056906
+  },
+  {
+   "model": "Devstral 2 123B",
+   "Abstraction": 0.2903931570575255,
+   "Perception": 0.4781165384112711,
+   "Spatiality": 0.3819280972814391,
+   "Transformation": 0.29604150067898616,
+   "Knowledge": 0.2480421988769274,
+   "overall": 0.3502324134526621
+  },
+  {
+   "model": "Kimi K2 Thinking",
+   "Abstraction": 0.23060360977908304,
+   "Perception": 0.4755945327690118,
+   "Spatiality": 0.35882307212370146,
+   "Transformation": 0.19509428261073636,
+   "Knowledge": 0.21565427264371048,
+   "overall": 0.31261468887547966
+  },
+  {
+   "model": "gpt-oss-120b",
+   "Abstraction": 0.22416966469641417,
+   "Perception": 0.3475958840340522,
+   "Spatiality": 0.30016741800575675,
+   "Transformation": 0.1670277361302128,
+   "Knowledge": 0.25547449326668537,
+   "overall": 0.269979532640855
+  },
+  {
+   "model": "Qwen3-Coder-Next",
+   "Abstraction": 0.2602198747396893,
+   "Perception": 0.36385034060187726,
+   "Spatiality": 0.19532646526330177,
+   "Transformation": 0.18016433531649945,
+   "Knowledge": 0.23188220183719466,
+   "overall": 0.26386263708262314
+  },
+  {
+   "model": "Nemotron Super 3 120B",
+   "Abstraction": 0.19290652594314744,
+   "Perception": 0.2494629109975504,
+   "Spatiality": 0.26877786908759277,
+   "Transformation": 0.06209013543487496,
+   "Knowledge": 0.1670383646260033,
+   "overall": 0.20026881115024145
+  },
+  {
+   "model": "Qwen3-Coder-30B-A3B",
+   "Abstraction": 0.18313959620345252,
+   "Perception": 0.1231747745000617,
+   "Spatiality": 0.17060575249345172,
+   "Transformation": 0.06694875839161996,
+   "Knowledge": 0.14253965066323515,
+   "overall": 0.14268714094284174
+  },
+  {
+   "model": "Mistral Large 3 675B",
+   "Abstraction": 0.07455478475944428,
+   "Perception": 0.1997250364023355,
+   "Spatiality": 0.14763622533537196,
+   "Transformation": 0.05740261589586676,
+   "Knowledge": 0.11752099725982698,
+   "overall": 0.12740080582304567
+  },
+  {
+   "model": "GLM-4.7-Flash",
+   "Abstraction": 0.15819988534311208,
+   "Perception": 0.09664809157921204,
+   "Spatiality": 0.08771652612770447,
+   "Transformation": 0.057255783146186796,
+   "Knowledge": 0.08640848469380516,
+   "overall": 0.10393438722775551
+  },
+  {
+   "model": "gpt-oss-20b",
+   "Abstraction": 0.08456454090171191,
+   "Perception": 0.0643764258354676,
+   "Spatiality": 0.07793089708056378,
+   "Transformation": 0.08721884353686361,
+   "Knowledge": 0.08762212808916829,
+   "overall": 0.07874994355361471
+  },
+  {
+   "model": "Qwen3-Next-80B-A3B",
+   "Abstraction": 0.04407069850088687,
+   "Perception": 0.09341521907475818,
+   "Spatiality": 0.09720828846956218,
+   "Transformation": 0.017414605409563265,
+   "Knowledge": 0.07859861986324679,
+   "overall": 0.06975075254444844
+  },
+  {
+   "model": "Llama 4 Scout",
+   "Abstraction": 0.101688252828086,
+   "Perception": 0.0166832634520012,
+   "Spatiality": 0.040868205983368766,
+   "Transformation": 0.024508095458701026,
+   "Knowledge": 0.05121067401136913,
+   "overall": 0.04930328944812509
+  },
+  {
+   "model": "Nemotron Nano 3 30B",
+   "Abstraction": 0.03655916899345121,
+   "Perception": 0.022857142857142857,
+   "Spatiality": 0.03911213053825336,
+   "Transformation": 0.012344497239418818,
+   "Knowledge": 0.023564112138139918,
+   "overall": 0.027756254109460185
+  },
+  {
+   "model": "Qwen3-VL-235B-A22B",
+   "Abstraction": 0.02475440006304374,
+   "Perception": 0.012979855674963143,
+   "Spatiality": 0.0337550345268727,
+   "Transformation": 0.008536993626813826,
+   "Knowledge": 0.044446342292880255,
+   "overall": 0.024693009399915155
+  },
+  {
+   "model": "Qwen3-32B",
+   "Abstraction": 0.001985665714039522,
+   "Perception": 0.002857142857142857,
+   "Spatiality": 0.013152577931668862,
+   "Transformation": 0.0032944692789018243,
+   "Knowledge": 0.0032736774813087195,
+   "overall": 0.004418163932493774
+  },
+  {
+   "model": "Llama 4 Maverick",
+   "Abstraction": 0.0,
+   "Perception": 0.0,
+   "Spatiality": 0.0,
+   "Transformation": 0.0,
+   "Knowledge": 0.00557279636380775,
+   "overall": 0.0010588313091234726
+  }
+ ],
+ "efficiency": [
+  {
+   "model": "Codex/gpt-6-astra",
+   "score": 0.9228340214922199,
+   "produced": 500,
+   "attempts": 500,
+   "produced_rate": 1.0,
+   "tool_use_rate": 1.0,
+   "tool_calls_per_attempt": 3.168,
+   "timeouts": 0,
+   "median_seconds": 22.0,
+   "mean_input_tokens": 56773.922,
+   "mean_output_tokens": 1164.608,
+   "failed_without_tools": 0,
+   "failed_with_tools": 0
+  },
+  {
+   "model": "Claude Code/Fable 5.1",
+   "score": 0.8942984694780162,
+   "produced": 500,
+   "attempts": 500,
+   "produced_rate": 1.0,
+   "tool_use_rate": 1.0,
+   "tool_calls_per_attempt": 9.25,
+   "timeouts": 0,
+   "median_seconds": 105.0,
+   "mean_input_tokens": 233474.558,
+   "mean_output_tokens": 7314.806,
+   "failed_without_tools": 0,
+   "failed_with_tools": 0
+  },
+  {
+   "model": "Gemini CLI/3.1 Pro",
+   "score": 0.892962658855426,
+   "produced": 500,
+   "attempts": 500,
+   "produced_rate": 1.0,
+   "tool_use_rate": 1.0,
+   "tool_calls_per_attempt": 25.29,
+   "timeouts": 0,
+   "median_seconds": 217.5,
+   "mean_input_tokens": 658650.07,
+   "mean_output_tokens": 7538.906,
+   "failed_without_tools": 0,
+   "failed_with_tools": 0
+  },
+  {
+   "model": "GLM-5",
+   "score": 0.5719026320559439,
+   "produced": 495,
+   "attempts": 500,
+   "produced_rate": 0.99,
+   "tool_use_rate": 1.0,
+   "tool_calls_per_attempt": 48.012,
+   "timeouts": 12,
+   "median_seconds": 378.0,
+   "mean_input_tokens": 1568595.006,
+   "mean_output_tokens": 16294.822,
+   "failed_without_tools": 0,
+   "failed_with_tools": 5
+  },
+  {
+   "model": "Kimi K2.5",
+   "score": 0.5573167396526539,
+   "produced": 498,
+   "attempts": 500,
+   "produced_rate": 0.996,
+   "tool_use_rate": 0.99,
+   "tool_calls_per_attempt": 41.854,
+   "timeouts": 0,
+   "median_seconds": 335.5,
+   "mean_input_tokens": 1213118.756,
+   "mean_output_tokens": 19178.594,
+   "failed_without_tools": 2,
+   "failed_with_tools": 0
+  },
+  {
+   "model": "MiniMax M2.5",
+   "score": 0.4507280115355934,
+   "produced": 488,
+   "attempts": 500,
+   "produced_rate": 0.976,
+   "tool_use_rate": 0.986,
+   "tool_calls_per_attempt": 45.736,
+   "timeouts": 0,
+   "median_seconds": 420.0,
+   "mean_input_tokens": 1294885.874,
+   "mean_output_tokens": 19751.93,
+   "failed_without_tools": 7,
+   "failed_with_tools": 5
+  },
+  {
+   "model": "DeepSeek V3.2",
+   "score": 0.37787808823056906,
+   "produced": 475,
+   "attempts": 500,
+   "produced_rate": 0.95,
+   "tool_use_rate": 0.998,
+   "tool_calls_per_attempt": 32.93,
+   "timeouts": 0,
+   "median_seconds": 277.0,
+   "mean_input_tokens": 635752.692,
+   "mean_output_tokens": 13622.232,
+   "failed_without_tools": 0,
+   "failed_with_tools": 25
+  },
+  {
+   "model": "Devstral 2 123B",
+   "score": 0.3502324134526621,
+   "produced": 494,
+   "attempts": 500,
+   "produced_rate": 0.988,
+   "tool_use_rate": 0.99,
+   "tool_calls_per_attempt": 38.692,
+   "timeouts": 0,
+   "median_seconds": 343.5,
+   "mean_input_tokens": 838955.602,
+   "mean_output_tokens": 13118.864,
+   "failed_without_tools": 4,
+   "failed_with_tools": 2
+  },
+  {
+   "model": "Kimi K2 Thinking",
+   "score": 0.31261468887547966,
+   "produced": 406,
+   "attempts": 500,
+   "produced_rate": 0.812,
+   "tool_use_rate": 0.958,
+   "tool_calls_per_attempt": 21.756,
+   "timeouts": 1,
+   "median_seconds": 125.0,
+   "mean_input_tokens": 508660.67,
+   "mean_output_tokens": 15458.366,
+   "failed_without_tools": 20,
+   "failed_with_tools": 74
+  },
+  {
+   "model": "gpt-oss-120b",
+   "score": 0.269979532640855,
+   "produced": 380,
+   "attempts": 500,
+   "produced_rate": 0.76,
+   "tool_use_rate": 0.996,
+   "tool_calls_per_attempt": 9.51,
+   "timeouts": 0,
+   "median_seconds": 34.0,
+   "mean_input_tokens": 116969.126,
+   "mean_output_tokens": 3886.368,
+   "failed_without_tools": 2,
+   "failed_with_tools": 118
+  },
+  {
+   "model": "Qwen3-Coder-Next",
+   "score": 0.26386263708262314,
+   "produced": 498,
+   "attempts": 500,
+   "produced_rate": 0.996,
+   "tool_use_rate": 0.998,
+   "tool_calls_per_attempt": 47.664,
+   "timeouts": 93,
+   "median_seconds": 455.0,
+   "mean_input_tokens": 1817146.226,
+   "mean_output_tokens": 19192.436,
+   "failed_without_tools": 0,
+   "failed_with_tools": 2
+  },
+  {
+   "model": "Nemotron Super 3 120B",
+   "score": 0.20026881115024145,
+   "produced": 436,
+   "attempts": 500,
+   "produced_rate": 0.872,
+   "tool_use_rate": 0.95,
+   "tool_calls_per_attempt": 22.95,
+   "timeouts": 0,
+   "median_seconds": 59.0,
+   "mean_input_tokens": 467204.3,
+   "mean_output_tokens": 8326.842,
+   "failed_without_tools": 23,
+   "failed_with_tools": 41
+  },
+  {
+   "model": "Qwen3-Coder-30B-A3B",
+   "score": 0.14268714094284174,
+   "produced": 480,
+   "attempts": 500,
+   "produced_rate": 0.96,
+   "tool_use_rate": 0.978,
+   "tool_calls_per_attempt": 12.484,
+   "timeouts": 0,
+   "median_seconds": 50.0,
+   "mean_input_tokens": 146391.744,
+   "mean_output_tokens": 4324.85,
+   "failed_without_tools": 11,
+   "failed_with_tools": 9
+  },
+  {
+   "model": "Mistral Large 3 675B",
+   "score": 0.12740080582304567,
+   "produced": 254,
+   "attempts": 500,
+   "produced_rate": 0.508,
+   "tool_use_rate": 0.982,
+   "tool_calls_per_attempt": 7.604,
+   "timeouts": 0,
+   "median_seconds": 25.5,
+   "mean_input_tokens": 80955.55,
+   "mean_output_tokens": 1756.198,
+   "failed_without_tools": 9,
+   "failed_with_tools": 237
+  },
+  {
+   "model": "GLM-4.7-Flash",
+   "score": 0.10393438722775551,
+   "produced": 470,
+   "attempts": 500,
+   "produced_rate": 0.94,
+   "tool_use_rate": 0.998,
+   "tool_calls_per_attempt": 27.738,
+   "timeouts": 1,
+   "median_seconds": 41.0,
+   "mean_input_tokens": 655689.134,
+   "mean_output_tokens": 7611.036,
+   "failed_without_tools": 1,
+   "failed_with_tools": 29
+  },
+  {
+   "model": "gpt-oss-20b",
+   "score": 0.07874994355361471,
+   "produced": 148,
+   "attempts": 500,
+   "produced_rate": 0.296,
+   "tool_use_rate": 0.94,
+   "tool_calls_per_attempt": 9.676,
+   "timeouts": 0,
+   "median_seconds": 55.0,
+   "mean_input_tokens": 135344.062,
+   "mean_output_tokens": 7408.89,
+   "failed_without_tools": 30,
+   "failed_with_tools": 322
+  },
+  {
+   "model": "Qwen3-Next-80B-A3B",
+   "score": 0.06975075254444844,
+   "produced": 167,
+   "attempts": 500,
+   "produced_rate": 0.334,
+   "tool_use_rate": 0.994,
+   "tool_calls_per_attempt": 6.14,
+   "timeouts": 0,
+   "median_seconds": 25.0,
+   "mean_input_tokens": 61249.166,
+   "mean_output_tokens": 1465.616,
+   "failed_without_tools": 3,
+   "failed_with_tools": 330
+  },
+  {
+   "model": "Llama 4 Scout",
+   "score": 0.04930328944812509,
+   "produced": 269,
+   "attempts": 500,
+   "produced_rate": 0.538,
+   "tool_use_rate": 0.998,
+   "tool_calls_per_attempt": 7.528,
+   "timeouts": 1,
+   "median_seconds": 15.0,
+   "mean_input_tokens": 75449.526,
+   "mean_output_tokens": 1175.106,
+   "failed_without_tools": 1,
+   "failed_with_tools": 230
+  },
+  {
+   "model": "Nemotron Nano 3 30B",
+   "score": 0.027756254109460185,
+   "produced": 91,
+   "attempts": 500,
+   "produced_rate": 0.182,
+   "tool_use_rate": 0.354,
+   "tool_calls_per_attempt": 8.07,
+   "timeouts": 0,
+   "median_seconds": 5.0,
+   "mean_input_tokens": 158505.56,
+   "mean_output_tokens": 2540.938,
+   "failed_without_tools": 322,
+   "failed_with_tools": 87
+  },
+  {
+   "model": "Qwen3-VL-235B-A22B",
+   "score": 0.024693009399915155,
+   "produced": 70,
+   "attempts": 500,
+   "produced_rate": 0.14,
+   "tool_use_rate": 1.0,
+   "tool_calls_per_attempt": 3.106,
+   "timeouts": 0,
+   "median_seconds": 9.0,
+   "mean_input_tokens": 26214.534,
+   "mean_output_tokens": 500.804,
+   "failed_without_tools": 0,
+   "failed_with_tools": 430
+  },
+  {
+   "model": "Qwen3-32B",
+   "score": 0.004418163932493774,
+   "produced": 25,
+   "attempts": 500,
+   "produced_rate": 0.05,
+   "tool_use_rate": 1.0,
+   "tool_calls_per_attempt": 1.848,
+   "timeouts": 0,
+   "median_seconds": 6.0,
+   "mean_input_tokens": 23536.09,
+   "mean_output_tokens": 304.048,
+   "failed_without_tools": 0,
+   "failed_with_tools": 475
+  },
+  {
+   "model": "Llama 4 Maverick",
+   "score": 0.0010588313091234726,
+   "produced": 7,
+   "attempts": 500,
+   "produced_rate": 0.014,
+   "tool_use_rate": 0.978,
+   "tool_calls_per_attempt": 2.104,
+   "timeouts": 0,
+   "median_seconds": 6.0,
+   "mean_input_tokens": 21448.216,
+   "mean_output_tokens": 218.102,
+   "failed_without_tools": 11,
+   "failed_with_tools": 482
+  },
+  {
+   "model": "bedrock-deepseek-r1",
+   "score": 0.0,
+   "produced": 0,
+   "attempts": 401,
+   "produced_rate": 0.0,
+   "tool_use_rate": 0.0,
+   "tool_calls_per_attempt": 0,
+   "timeouts": 0,
+   "median_seconds": 6,
+   "mean_input_tokens": 0,
+   "mean_output_tokens": 0,
+   "failed_without_tools": 401,
+   "failed_with_tools": 0
+  },
+  {
+   "model": "Gemma 3 12B",
+   "score": 0.0,
+   "produced": 0,
+   "attempts": 500,
+   "produced_rate": 0.0,
+   "tool_use_rate": 0.0,
+   "tool_calls_per_attempt": 0,
+   "timeouts": 0,
+   "median_seconds": 17.0,
+   "mean_input_tokens": 1798.856,
+   "mean_output_tokens": 332.416,
+   "failed_without_tools": 500,
+   "failed_with_tools": 0
+  },
+  {
+   "model": "Gemma 3 27B",
+   "score": 0.0,
+   "produced": 0,
+   "attempts": 500,
+   "produced_rate": 0.0,
+   "tool_use_rate": 0.0,
+   "tool_calls_per_attempt": 0,
+   "timeouts": 0,
+   "median_seconds": 31.0,
+   "mean_input_tokens": 1830.566,
+   "mean_output_tokens": 526.072,
+   "failed_without_tools": 500,
+   "failed_with_tools": 0
+  },
+  {
+   "model": "Llama 3.3 70B",
+   "score": 0.0,
+   "produced": 0,
+   "attempts": 500,
+   "produced_rate": 0.0,
+   "tool_use_rate": 0.0,
+   "tool_calls_per_attempt": 0,
+   "timeouts": 0,
+   "median_seconds": 5.0,
+   "mean_input_tokens": 6052.084,
+   "mean_output_tokens": 176.186,
+   "failed_without_tools": 500,
+   "failed_with_tools": 0
+  },
+  {
+   "model": "Magistral Small",
+   "score": 0.0,
+   "produced": 0,
+   "attempts": 500,
+   "produced_rate": 0.0,
+   "tool_use_rate": 0.0,
+   "tool_calls_per_attempt": 0,
+   "timeouts": 0,
+   "median_seconds": 5.0,
+   "mean_input_tokens": 7618.378,
+   "mean_output_tokens": 596.932,
+   "failed_without_tools": 500,
+   "failed_with_tools": 0
+  }
+ ]
+}

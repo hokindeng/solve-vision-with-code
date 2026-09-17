@@ -1,23 +1,24 @@
 \section{Analysis}
 \label{sec:analysis}
 
-\subsection{Efficiency: the same score at ten times the cost}
+\subsection{Efficiency}
 \label{sec:ana-efficiency}
+
+% the wrapped chart cannot cross a page: start it on a fresh page when less than its height is left (a needspace-style test on \pagetotal, inline because main.tex does not load the package)
+\par\begingroup\dimen0=\textheight\advance\dimen0 by -3.6in\ifdim\pagetotal>\dimen0 \aftergroup\clearpage\fi\endgroup
+\begin{wrapfigure}{r}{0.47\textwidth}\vspace{-8pt}
+\centering
+\includegraphics[width=\linewidth]{figures/fig_tools_vs_score.pdf}
+\caption{Score against mean tool calls per instance (log scale) for every lane that produced at least one video, the disc area proportional to the number of videos produced out of 500; the four lanes with no video are omitted. Dark blue discs are the closed agents, light blue OpenCode with an open-weight model; the three closed agents sit at the top left, and no lane to their right reaches them. Values from \cref{tab:efficiency} and its full-length source, \texttt{bench/paper/table3\_efficiency.csv}.}
+\label{fig:tools}\vspace{-8pt}
+\end{wrapfigure}
+The three closed agents land within 0.030 of each other, but they do not pay the same price (\cref{tab:efficiency}). Codex solves an instance in 3.2 tool calls, a median of 22\,s and 56.8k input tokens. Claude Code uses 2.9$\times$ the calls, 4.8$\times$ the time and 4.1$\times$ the input tokens for a score 0.029 lower; Gemini CLI uses 8.0$\times$ the calls, 9.9$\times$ the time and 11.6$\times$ the input tokens for a score 0.030 lower. The difference lies in how each agent looks at the frame. Codex receives the frame as an image attached to its prompt, and a typical trace is a directory listing, one probe of a few pixels and the program, three commands in all. Claude Code opens the image with its file reader on 465 of the 500 instances, then measures coordinates with short scripts. Gemini CLI opens the image on only 10 of 500 instances. It reconstructs the scene numerically, script by script, and the 25.3 calls and 659k input tokens per instance are the cost of that reconstruction.
+
+\Cref{fig:tools} puts every lane on one axis. Calls do not buy score. The best open-weight lanes, GLM-5 and Kimi K2.5, make 48.0 and 41.9 calls per instance and read 1.57M and 1.21M input tokens, 15$\times$ and 13$\times$ Codex's calls and 28$\times$ and 21$\times$ its tokens, for 0.572 and 0.557. The lanes that call tools the least also score the least, so tool use is necessary, and yet it fails to separate the top three from the rest.
 
 \input{tables/tab_efficiency}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figures/fig_tools_vs_score.pdf}
-\caption{Score against mean tool calls per instance (log scale) for every lane that produced at least one video; the four lanes with no video are omitted. Blue: closed agents; green: OpenCode with an open-weight model. Values from \cref{tab:efficiency} and its full-length source, \texttt{bench/paper/table3\_efficiency.csv}.}
-\label{fig:tools}
-\end{figure}
-
-The three closed agents land within 0.030 of each other, but they do not pay the same price (\cref{tab:efficiency}). Codex solves an instance in 3.2 tool calls, a median of 22\,s and 56.8k input tokens. Claude Code uses 2.9$\times$ the calls, 4.8$\times$ the time and 4.1$\times$ the input tokens for a score 0.029 lower; Gemini CLI uses 8.0$\times$ the calls, 9.9$\times$ the time and 11.6$\times$ the input tokens for a score 0.030 lower. The gap is a difference in how each agent looks at the frame. Codex receives the frame as an image attached to its prompt; a typical trace is a directory listing, one probe of a few pixels and the program, three commands in all. Claude Code opens the image with its file reader on 465 of the 500 instances, then measures coordinates with short scripts. Gemini CLI opens the image on only 10 of 500 instances; it reconstructs the scene numerically, script by script, and the 25.3 calls and 659k input tokens per instance are the cost of that reconstruction.
-
-\Cref{fig:tools} puts every lane on one axis. Score is not bought with calls: the best open-weight lanes, GLM-5 and Kimi K2.5, make 48.0 and 41.9 calls per instance and read 1.57M and 1.21M input tokens, 15$\times$ and 13$\times$ Codex's calls and 28$\times$ and 21$\times$ its tokens, for 0.572 and 0.557. The lanes that call tools the least also score the least, so tool use is necessary; it is not what separates the top three from the rest.
-
-\subsection{Failure anatomy of the open-weight lanes}
+\subsection{Failure Anatomy of the Open-Weight Lanes}
 \label{sec:ana-failure}
 
 An instance fails in one of two ways: a \emph{delivery failure}, in which no \texttt{video.mp4} exists when the container exits, or a \emph{content failure}, in which a video exists and the evaluator rejects it. \Cref{tab:efficiency} separates the two through the \emph{Videos} column, and the source CSV further splits delivery failures by whether the agent called a tool at all.
@@ -30,50 +31,77 @@ An instance fails in one of two ways: a \emph{delivery failure}, in which no \te
 
 \textbf{Diligent but wrong.} GLM-5, Kimi K2.5 and MiniMax M2.5 make 42--48 calls per instance, read 1.2--1.6M input tokens, and deliver a video on 495, 498 and 488 instances. Their failures are almost all content failures: their scores over delivered videos, 0.578, 0.560 and 0.462, are within 0.011 of their scores over all 500. These models run the loop the closed agents run, at a higher price, and produce a wrong video.
 
-\subsection{Where the closed agents fail}
+\subsection{Where the Closed Agents Fail}
 \label{sec:where-fail}
+
+On 53 of the 100 tasks all three agents score at least 0.95, and on 13 the three-agent mean is below 0.7 (\cref{fig:heatmap}). \Cref{tab:hardest} lists the twelve hardest; eleven are in-domain. We read the programs and the evaluators behind these tasks and find four causes\IfFileExists{figures/fig_qualitative.pdf}{; \cref{fig:qualitative} shows the agents' last frames beside the ground truth on ten tasks, three of them from \cref{tab:hardest}}{}.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_heatmap.pdf}
+\caption{Per-task mean score of the three closed agents on all 100 tasks, the 50 in-domain tasks in the left block and the 50 out-of-domain tasks in the right, grouped by category (labels above). Colour is one ramp from 0 (white) to 1 (dark blue); the 13 tasks with a three-agent mean below 0.7 are named under the axis, and the twelve of \cref{tab:hardest} are among them. Values from \texttt{bench/paper/table4\_per\_task\_closed.csv}; categories from the evaluator output.}
+\label{fig:heatmap}
+\end{figure}
 
 \input{tables/tab_hardest}
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{figures/fig_heatmap.pdf}
-\caption{Per-task mean score of the three closed agents on all 100 tasks, in-domain above and out-of-domain below. Within each category tasks are sorted by the three-agent mean; colour is one sequential ramp from 0 (white) to 1 (dark blue). Values from \texttt{bench/paper/table4\_per\_task\_closed.csv}; categories from the evaluator output.}
-\label{fig:heatmap}
-\end{figure*}
+\textbf{The answer belongs where the diagram puts it.} O-13 and O-14 show an analogy $A\!\to\!B\!\to\!C :: D\!\to\,?\!\to\,?$ and ask to ``apply the same two-step transformation''. The two \texttt{?} cells are where the answer belongs, and the top row's ``filled'' and ``outline'' styles differ only in stroke width. Claude Code animates $D$ in place on all 10 instances of the two tasks, thinning its stroke and moving it, and scores below 0.1 on every one; Gemini CLI does so on 4 of 10. Codex writes into the \texttt{?} cells on all 10 and scores 0.9 or above on 9; on the tenth it redraws the shape instead of copying its pixels and scores 0.
 
-On 53 of the 100 tasks all three agents score at least 0.95, and on 13 the three-agent mean is below 0.7 (\cref{fig:heatmap}). \Cref{tab:hardest} lists the twelve hardest; eleven are in-domain. We read the programs and the evaluators behind these tasks and find four causes.
-
-\textbf{The answer must go where the diagram, not the prompt, says.} O-13 and O-14 show an analogy $A\!\to\!B\!\to\!C :: D\!\to\,?\!\to\,?$ and ask to ``apply the same two-step transformation''. The two \texttt{?} cells are where the answer belongs, and the top row's ``filled'' and ``outline'' styles differ only in stroke width. Claude Code animates $D$ in place on all 10 instances of the two tasks, thinning its stroke and moving it, and scores below 0.1 on every one; Gemini CLI does so on 4 of 10. Codex writes into the \texttt{?} cells on all 10 and scores 0.9 or above on 9; on the tenth it redraws the shape instead of copying its pixels and scores 0.
-
-\textbf{Unstated conventions decide the score.} On G-218 every program we read detects the three vertices and computes the largest interior angle in the same way; the scores follow the radius of the drawn circle, not the vertex. The evaluator credits a circle only if it covers 70\% of an $80\times80$ pixel box around the vertex, and the ground-truth ring has radius 40. Programs that drew a radius of 34 or less score 0 (four of Codex's five instances, two of Claude's); those that drew 37 or more score 1.0 (all five of Gemini's). On G-43 the three agents box the same room on four of the five instances, with boxes that differ by at most 20 pixels, and score 0.00, 0.00 and 0.78 on instance 00000. The evaluator's green range, $R\!\le\!100$, $G\!\ge\!100$, $B\!\le\!100$, contains the floorplan's grey $(100,100,100)$ outlines exactly at its corner; how many of them survive video encoding sets the count of ``green'' contours, and its count penalty removes the whole score.
+\textbf{Unstated conventions decide the score.} On G-218 every program we read detects the three vertices and computes the largest interior angle in the same way; the scores follow the radius of the drawn circle, not the vertex. The evaluator credits a circle only if it covers 70\% of an $80\times80$ pixel box around the vertex, and the ground-truth ring has radius 40. Programs that drew a radius of 34 or less score 0 (four of Codex's five instances, two of Claude's); those that drew 37 or more score 1.0 (all five of Gemini's). On G-43 the three agents box the same room on four of the five instances, with boxes that differ by at most 20 pixels, and score 0.00, 0.00 and 0.78 on instance 00000. The evaluator's green range, $R\!\le\!100$, $G\!\ge\!100$, $B\!\le\!100$, contains the floorplan's grey $(100,100,100)$ outlines exactly at its corner. How many of them survive video encoding sets the count of ``green'' contours, and the count penalty removes the whole score.
 
 \textbf{A correct answer that is not the reference.} G-15 asks for a shortest path around obstacles. Any shortest path is correct, but the evaluator scores proximity to the ground truth's own path. The three programs for instance 00001 each run a breadth-first search; Claude Code's tie-break reproduces the reference path and scores 1.0, Codex's and Gemini's return other paths of the same length and score 0.03 each. On instance 00002, where the shortest path is a straight line, all three score at least 0.999.
 
-\textbf{The frame under-determines the video.} O-55 rotates the camera $180^\circ$ around a six-block sculpture, which reveals faces that are not visible in the frame. O-32 and O-15 are scored against a simulated trajectory whose speed and timing the prompt does not give. O-29, O-21 and O-23 grade a multi-step process on the order and state of its intermediate steps. G-29 requires reading numeric labels off a pie chart, and scores swing from 0.0 to 0.96 between instances. These are the tasks where a program alone is not enough and a physical or perceptual prior would help. Eleven of the twelve hardest tasks are in-domain, which is why the agents score higher on the held-out half.
+\textbf{The frame under-determines the video.} O-55 rotates the camera $180^\circ$ around a six-block sculpture, which reveals faces that are not visible in the frame. O-32 and O-15 are scored against a simulated trajectory whose speed and timing the prompt does not give. O-29, O-21 and O-23 grade a multi-step process on the order and state of its intermediate steps. G-29 requires reading numeric labels off a pie chart, and scores swing from 0.0 to 0.96 between instances. On these tasks a program alone is not enough, and a physical or perceptual prior would help. Eleven of the twelve hardest tasks are in-domain, and this is the source of the agents' higher score on the held-out half.
 
-\subsection{Qualitative: what a winning program does}
+\IfFileExists{figures/fig_qualitative.pdf}{%
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_qualitative.pdf}
+\caption{Last frames of the three closed agents beside the ground truth on ten tasks (instance 00000), grouped by category. Each row shows the first frame the agent was given, the ground-truth last frame and the last frame rendered by the program Codex, Claude Code and Gemini CLI wrote, with the official evaluator's score under each. Most rows are solved by all three; the failures are the unstated conventions of G-43 and G-218 (\cref{sec:where-fail}), where the drawn box or circle sits in the right place and scores 0, and the under-determined trajectory of O-32, with partial credit on O-52 and O-56.}
+\label{fig:qualitative}
+\end{figure}
+}{}
+
+\subsection{What a Winning Program Does}
 \label{sec:ana-qualitative}
 
-\begin{figure*}[t]
+\Cref{lst:raven} shows the O-56 program, a $3\times3$ progressive matrix with an empty bottom-right cell. Codex never inspected a pixel. It read the frame attached to its prompt, stated the rule (``each row shifts the three symbols one position left''), and wrote the program in its second command. The program copies the pentagon's own pixels from the cell where it appears into the empty cell, so stroke and colour match the source exactly; it fades the question mark to white over eight frames and reveals the copied pixels in angular order over the next 25; and it asserts, on every frame, that the other eight cells are byte-identical to the input. Its 835 output tokens cover the whole run.
+
+\IfFileExists{figures/fig_code_O56.pdf}{%
+\begin{figure}[!htb]
 \centering
-% the verbatim package resets the font; set its size for the two listings only
-\makeatletter\def\verbatim@font{\ttfamily\fontsize{6.2}{7.2}\selectfont}\makeatother
+\includegraphics[width=\textwidth]{figures/fig_code_O56.pdf}
+\caption{The Codex program for O-56 (raven, out-of-domain, instance 00000; 2 tool calls, 17\,s, score 1.0) beside the task's first frame and the last frame it renders. The program is the agent's own \texttt{solve.py}, trimmed to the lines discussed in the text; it copies the pentagon's pixels from the cell where they appear into the empty cell and asserts on every frame that the other eight cells are unchanged.}
+\label{lst:raven}
+\end{figure}
+}{%
+\begin{figure}[H]
+\centering
+\fontsize{5.8}{6.6}\selectfont
 \begin{minipage}[t]{0.49\textwidth}
 \verbatiminput{figures/qualitative/O-56_raven.py}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}
 \verbatiminput{figures/qualitative/G-13_grid_number_sequence.py}
 \end{minipage}
-\caption{Two Codex programs that score 1.0, trimmed to 25 lines each: imports and the ffmpeg encoder setup are removed and long lines are wrapped; the trimmed programs reproduce the original frames exactly. Left: O-56 raven, out-of-domain, instance 00000, 2 tool calls, 17\,s. Right: G-13 grid number sequence, in-domain, instance 00000, 3 tool calls, 20\,s.}
+\normalsize
+\caption{Two Codex programs that score 1.0, trimmed to 25 lines each (imports and the ffmpeg encoder setup removed, long lines wrapped); the trimmed programs reproduce the original frames exactly. Left: O-56 raven, out-of-domain, instance 00000, 2 tool calls, 17\,s. Right: G-13 grid number sequence, in-domain, instance 00000, 3 tool calls, 20\,s.}
 \label{lst:raven}\label{lst:grid}
-\end{figure*}
+\end{figure}
+}
 
-\Cref{lst:raven} (left) shows the O-56 program, a $3\times3$ progressive matrix with an empty bottom-right cell. Codex never inspected a pixel: it read the frame attached to its prompt, stated the rule (``each row shifts the three symbols one position left''), and wrote the program in its second command. The program copies the pentagon's own pixels from the cell where it appears into the empty cell, so stroke and colour match the source exactly; it fades the question mark to white over eight frames and reveals the copied pixels in angular order over the next 25; and it asserts, on every frame, that the other eight cells are byte-identical to the input. Its 835 output tokens cover the whole run.
+\Cref{lst:grid} shows the G-13 program, which must guide the agent through numbered cells to the goal along shortest grid paths. Codex probed the frame once to find the sprite's bounding box, hard-coded the nine corner cells of the route from its reading of the image, with a comment giving the Manhattan length of each leg, and expanded the corners into a cell-by-cell route. Every frame is the input with the sprite erased from the start cell and re-stamped, pixel for pixel, at an interpolated position, so the board never changes.
 
-\Cref{lst:grid} (right) shows the G-13 program: guide the agent through numbered cells to the goal along shortest grid paths. Codex probed the frame once to find the sprite's bounding box, hard-coded the nine corner cells of the route from its reading of the image, with a comment giving the Manhattan length of each leg, and expanded the corners into a cell-by-cell route. Every frame is the input with the sprite erased from the start cell and re-stamped, pixel for pixel, at an interpolated position, so the board never changes. The perception happened in the model; the program is the answer written down.
+\IfFileExists{figures/fig_code_G13.pdf}{\IfFileExists{figures/fig_code_O56.pdf}{%
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{figures/fig_code_G13.pdf}
+\caption{The Codex program for G-13 (grid number sequence, in-domain, instance 00000; 3 tool calls, 20\,s, score 1.0) beside the task's first frame and the last frame it renders. The nine corner cells of the route are written down from the image, each leg annotated with its Manhattan length, and the sprite is erased and re-stamped pixel for pixel on every frame.}
+\label{lst:grid}
+\end{figure}
+}{}}{}
 
-\subsection{What the result does and does not say}
+\subsection{Scope of the Result}
 \label{sec:ana-scope}
 
-The comparison is exact because both families are graded by the same deterministic evaluator on the same 500 instances, and it is narrow for the same reason. The agents were told the container geometry, had one attempt, and were judged by rules with the sensitivities of \cref{sec:where-fail}; no human looked at a video. The result is a statement about the interface, a program versus a denoiser, on a benchmark built to be verifiable, not a claim that the agents perceive the frame better than a video model in general.
+The comparison is exact because both families are graded by the same deterministic evaluator on the same 500 instances, and it is narrow for the same reason. The agents were told the container geometry, had one attempt, and were judged by rules with the sensitivities of \cref{sec:where-fail}; no human looked at a video. The result concerns the interface, a program against a denoiser, on a benchmark built to be verifiable. It does not show that the agents perceive the frame better than a video model in general.

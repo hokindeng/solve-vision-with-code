@@ -28,6 +28,23 @@ Bench box: one c7i.4xlarge (us-east-1, CPU only) ran every lane 2026-09-12 → 0
 same layout; a lane's videos, workspaces and evaluator JSON were copied here when it completed. The box is
 stopped.
 
+## Public copies
+
+The bucket stays private. These parts of it are public, as of 2026-09-17:
+
+| Public location | Content | Bucket source |
+|---|---|---|
+| `bench/results/<lane>/` (GitHub repo) | official evaluator JSON, 22 lanes + oracle/frozen | `bench/evaluation_results/` |
+| `bench/stats.json`, `bench/paper/` (GitHub repo) | run statistics; table1–4 CSV, tables.md | `paper/2026-09-16_tables/` |
+| `docs/media/` (site, https://hokindeng.github.io/solve-vision-with-code/) | the three closed-model lanes' agent videos (1,500 mp4), the 500 ground-truth videos, and thumbnails | `bench/outputs/<lane>/` (closed lanes), `official-data/` |
+| `docs/data/solve/` (site) | the 1,500 `solve.py` programs of the three closed-model lanes | `bench/runs/<lane>/<split>/<task>/<idx>/app/solve.py` |
+| `docs/paper.pdf` (site) | the paper | — |
+
+`docs/build_site.py` regenerates `docs/data/` and `docs/media/` from the lane output directories (`docs/README.md`).
+Not public: the open-weight lanes' videos (`bench/outputs/<lane>.tgz`), every per-instance workspace beyond
+`solve.py` (event logs, container output, `summary.json`), the box logs, and the archive prefixes. These are
+available from the corresponding author on request.
+
 ## Final leaderboard (2026-09-16, VBVR-Pro-Bench video setting)
 
 Official evaluator, kit-conforming environment, mean over all 500 instances; an instance without a video

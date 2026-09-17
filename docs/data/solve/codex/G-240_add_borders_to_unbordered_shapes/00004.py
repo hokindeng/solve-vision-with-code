@@ -1,0 +1,47 @@
+from pathlib import Path
+import cv2
+import numpy as np
+from PIL import Image
+import subprocess
+
+ROOT = Path(__file__).resolve().parent
+
+def outline_order(base, color):
+    mask = np.all(base == color, axis=2).astype(np.uint8)
+    # Keep each outline inside its shape so all background pixels remain intact.
+    distance = cv2.distanceTransform(mask, cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
+    ys, xs = np.where((mask > 0) & (distance <= 4.0))
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+    contour = max(contours, key=cv2.contourArea)[:, 0, :]
+    # Start at the top and travel clockwise.
+    start = np.lexsort((contour[:, 0], contour[:, 1]))[0]
+    contour = np.roll(contour, -start, axis=0)
+    if cv2.contourArea(contour, oriented=True) < 0:
+        contour = np.concatenate((contour[:1], contour[:0:-1]))
+    from scipy.spatial import cKDTree
+    _, indices = cKDTree(contour).query(np.column_stack((xs, ys)))
+    lengths = np.linalg.norm(np.diff(contour, axis=0), axis=1)
+    cumulative = np.r_[0, np.cumsum(lengths)]
+    return ys, xs, cumulative[indices] / (cumulative[-1] + np.linalg.norm(contour[-1]-contour[0]))
+
+def main():
+    base = np.asarray(Image.open(ROOT / 'first_frame.png').convert('RGB'))
+    circle = outline_order(base, (255, 140, 0))
+    triangle = outline_order(base, (60, 179, 113))
+    out = ROOT / 'output'
+    out.mkdir(exist_ok=True)
+    command = ['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-vcodec', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1024x1024', '-r', '16', '-i', '-', '-an', '-c:v', 'libx264', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', str(out / 'video.mp4')]
+    proc = subprocess.Popen(command, stdin=subprocess.PIPE)
+    for i in range(80):
+        frame = base.copy()
+        for (ys, xs, order), progress in [(circle, i / 42), (triangle, (i - 42) / 36)]:
+            if progress > 0:
+                visible = order < min(progress, 1.0)
+                frame[ys[visible], xs[visible]] = 0
+        proc.stdin.write(frame.tobytes())
+    proc.stdin.close()
+    if proc.wait() != 0:
+        raise RuntimeError('ffmpeg failed')
+
+if __name__ == '__main__':
+    main()

@@ -5,50 +5,49 @@ Table~\ref{tab:main} and Figure~\ref{fig:leaderboard} report the score of every 
 
 \input{tables/tab_main}
 
-\begin{figure*}[t]
+\begin{figure}[!t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_leaderboard.pdf}
-\caption{All 37 systems sorted by overall score. Left: mean score over the 500 instances; colour is the system class. Right: the same systems on the 50 in-domain tasks (hollow) and the 50 out-of-domain tasks (filled). For every coding agent above the noise floor the filled marker lies to the right of the hollow one; for every video model trained on the benchmark's task families it lies to the left. $^\dagger$: no video in 500 attempts.}
+\caption{The 33 systems that produced at least one video, sorted by overall score (bar: mean over the 500 instances, coloured by system class), with the in-domain score as a hollow circle and the out-of-domain score as a solid diamond on each bar and a dashed line at the best video model (0.670). For every coding agent above the noise floor the diamond lies to the right of the circle, and for every video model trained on the benchmark's task families it lies to the left. The four systems with no video in 500 attempts are named below the axis.}
 \label{fig:leaderboard}
-\end{figure*}
+\end{figure}
 
 \subsection{Main Comparison}
 \label{sec:res-main}
 
-\textbf{The three closed-model coding agents occupy the top three positions.} Codex with gpt-6-astra scores 0.923, Claude Code with Fable~5.1 scores 0.894, and Gemini CLI with Gemini~3.1~Pro scores 0.893, all with a video on 500 of 500 instances. The best video model, VBVR-Pro-Wan2.2-I2V-A14B, which was RL-trained on the in-domain task families with the same evaluator as reward, scores 0.670. The gap between the best agent and the best video model is 0.253; the second-best video model, VBVR-Pro-Wan2.1-I2V-14B, is a further 0.108 behind at 0.562. The three agents are within 0.030 of each other, so the result is a property of the approach, not of one model.
+The three closed-model coding agents occupy the top three positions. Codex with gpt-6-astra scores 0.923, Claude Code with Fable~5.1 scores 0.894, and Gemini CLI with Gemini~3.1~Pro scores 0.893, all with a video on 500 of 500 instances. The best video model, VBVR-Pro-Wan2.2-I2V-A14B, which was RL-trained on the in-domain task families with the same evaluator as reward, scores 0.670. The gap between the best agent and the best video model is 0.253; the second-best video model, VBVR-Pro-Wan2.1-I2V-14B, is a further 0.108 behind at 0.562. The three agents are within 0.030 of each other, so the result does not hinge on one model.
 
-\textbf{The gap is not an evaluator artefact.} The checker is the benchmark's own, run unchanged; the video-model rows are the authors' numbers with the same checker. The agents never see the ground truth, the generator or the task metadata, and have no image or video model. What they have is a program that reads the first frame, computes the answer and renders it.
+The gap is not an evaluator artefact. The checker is the benchmark's own, run unchanged, and the video-model rows are the authors' numbers with the same checker. The agents never see the ground truth, the generator or the task metadata, and have no image or video model. Each writes a program that reads the first frame, computes the answer and renders it.
 
 \subsection{In-Domain versus Out-of-Domain}
 \label{sec:res-ood}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.62\columnwidth]{figures/fig_ood.pdf}
-\caption{Out-of-domain minus in-domain score for every system with at least one video, sorted. Coding agents (no training on the benchmark) gain on the held-out families; the five video models trained on VBVR or VBVR-Pro task families lose between 0.062 and 0.341; video models without benchmark training sit near zero. Values are the ID and OOD columns of Table~\ref{tab:main}.}
-\label{fig:ood}
-\end{figure}
-
 The benchmark splits its 100 tasks into 50 in-domain families, for which VBVR-Pro provides training data, and 50 out-of-domain families held out from all training. Figure~\ref{fig:ood} plots OOD minus ID for every system that produced at least one video. The two classes move in opposite directions.
 
-\textbf{Coding agents score higher out of domain.} Codex goes from 0.879 in domain to 0.967 out of domain ($+0.089$), Claude Code from 0.830 to 0.958 ($+0.128$), Gemini CLI from 0.826 to 0.960 ($+0.133$). The open-weight models gain more: GLM-5 $+0.185$, Kimi~K2.5 $+0.206$. Of the 22 coding agents with a video, 21 have a positive difference; the exception, Qwen3-32B, produced 25 videos and scores 0.006 versus 0.003 ($-0.003$, noise). No agent was trained on any family, so the split has no meaning for them; the held-out families are simply easier for a program: 11 of the 12 hardest tasks for the closed agents are in-domain (Table~\ref{tab:hardest}).
+\begin{wrapfigure}{r}{0.48\textwidth}\vspace{-8pt}
+\centering
+\includegraphics[width=\linewidth]{figures/fig_ood.pdf}
+\caption{In-domain score (hollow) and out-of-domain score (solid) of every system with at least one video, sorted by the difference between the two. Coding agents (blue), none trained on the benchmark, gain on the held-out families; the five video models trained on VBVR or VBVR-Pro task families (grey) lose between 0.062 and 0.341, and video models without benchmark training (light grey) sit near zero. Values are the ID and OOD columns of Table~\ref{tab:main}.}
+\label{fig:ood}\vspace{-8pt}
+\end{wrapfigure}
+Coding agents score higher out of domain. Codex goes from 0.879 in domain to 0.967 out of domain ($+0.089$), Claude Code from 0.830 to 0.958 ($+0.128$), Gemini CLI from 0.826 to 0.960 ($+0.133$). The open-weight models gain more: GLM-5 $+0.185$, Kimi~K2.5 $+0.206$. Of the 22 coding agents with a video, 21 have a positive difference; the exception, Qwen3-32B, produced 25 videos and scores 0.006 versus 0.003 ($-0.003$, noise). No agent was trained on any family, so the split has no meaning for them. The held-out families are simply easier for a program; 11 of the 12 hardest tasks for the closed agents are in-domain (Table~\ref{tab:hardest}).
 
-\textbf{Video models trained on the benchmark score lower out of domain.} All five VBVR- and VBVR-Pro-trained models drop: VBVR-Pro-Wan2.2-I2V-A14B from 0.808 to 0.532 ($-0.276$), VBVR-Pro-Wan2.1-I2V-14B from 0.730 to 0.395 ($-0.335$), VBVR-Pro-Wan2.2-TI2V-5B from 0.641 to 0.300 ($-0.341$), VBVR-Pro-LTX2.3 from 0.527 to 0.324 ($-0.203$), VBVR-Wan2.2 from 0.548 to 0.486 ($-0.062$). The video models without benchmark training are flat or slightly up: Seedance~2.0 $+0.096$, Kling~3.0 $+0.071$, Wan2.2-I2V-A14B $+0.050$, LTX-2.3-I2AV $+0.013$, Veo~3.1 $-0.007$, Wan2.1-I2V-14B-720P $-0.010$. Training a video model on the task families buys in-domain score at the cost of out-of-domain score: the RL-trained A14B is the only video model above 0.8 in domain, and out of domain it falls to 0.532, below Seedance~2.0 (0.547), which never saw the benchmark. Out of domain every closed agent is above 0.95 and the best video model is at 0.547. In domain the agents still lead: Codex 0.879, Claude Code 0.830 and Gemini CLI 0.826 against 0.808 for the A14B, on the split it was trained on with the evaluator as its reward.
+Video models trained on the benchmark score lower out of domain. All five VBVR- and VBVR-Pro-trained models drop: VBVR-Pro-Wan2.2-I2V-A14B from 0.808 to 0.532 ($-0.276$), VBVR-Pro-Wan2.1-I2V-14B from 0.730 to 0.395 ($-0.335$), VBVR-Pro-Wan2.2-TI2V-5B from 0.641 to 0.300 ($-0.341$), VBVR-Pro-LTX2.3 from 0.527 to 0.324 ($-0.203$), VBVR-Wan2.2 from 0.548 to 0.486 ($-0.062$). The video models without benchmark training are flat or slightly up: Seedance~2.0 $+0.096$, Kling~3.0 $+0.071$, Wan2.2-I2V-A14B $+0.050$, LTX-2.3-I2AV $+0.013$, Veo~3.1 $-0.007$, Wan2.1-I2V-14B-720P $-0.010$. Training a video model on the task families buys in-domain score at the cost of out-of-domain score. The RL-trained A14B is the only video model above 0.8 in domain, and out of domain it falls to 0.532, below Seedance~2.0 (0.547), which never saw the benchmark. Out of domain every closed agent is above 0.95 and the best video model is at 0.547. In domain the agents still lead, with Codex at 0.879, Claude Code at 0.830 and Gemini CLI at 0.826 against 0.808 for the A14B, on the split it was trained on with the evaluator as its reward.
 
 \subsection{Results by Category}
 \label{sec:res-category}
 
-\input{tables/tab_categories}
-
 Table~\ref{tab:categories} breaks the score down by the benchmark's five task categories: Abstraction (25 tasks), Perception (28), Spatiality (16), Transformation (12) and Knowledge (19). The closed agents are above 0.8 in every category. Codex is best on Abstraction (0.957) and Knowledge (0.863), Gemini CLI on Perception (0.972), and Claude Code on Spatiality (0.908) and Transformation (0.943). The lowest closed-agent cell is Gemini CLI on Spatiality (0.816), the highest Gemini CLI on Perception (0.972).
 
-The open-weight models have a different profile: Perception is their strongest category by a wide margin (GLM-5 0.748, Kimi~K2.5 0.727, MiniMax~M2.5 0.633), Abstraction and Knowledge the weakest (GLM-5 0.478 and 0.506). Reading the first frame correctly is within reach of the mid-tier models; the categories that need a multi-step plan separate them from the closed models.
+\input{tables/tab_categories}
 
-The only published per-category numbers for a video model are those of the VBVR-Pro-Wan2.2-TI2V-5B baseline~\citep[Table~8]{vbvrpro2026}; we compare against its in-domain profile, and the last block of Table~\ref{tab:categories} restricts the closed agents to the same 50 tasks. All three agents lead the baseline in every category. Codex leads it by 0.099 on Transformation (0.823 versus 0.724), the video model's best category, and by 0.472 on Perception (0.948 versus 0.476), its worst, which is the strongest category of all three agents (0.910 to 0.948).
+The open-weight models have a different profile. Perception is their strongest category by a wide margin (GLM-5 0.748, Kimi~K2.5 0.727, MiniMax~M2.5 0.633), Abstraction and Knowledge the weakest (GLM-5 0.478 and 0.506). Reading the first frame correctly is within reach of the mid-tier models; the categories that need a multi-step plan separate them from the closed models.
+
+The only published per-category numbers for a video model are those of the VBVR-Pro-Wan2.2-TI2V-5B baseline~\citep[Table~8]{vbvrpro2026}. We compare against its in-domain profile, and the last block of Table~\ref{tab:categories} restricts the closed agents to the same 50 tasks. All three agents lead the baseline in every category. Codex leads it by 0.099 on Transformation (0.823 versus 0.724), the video model's best category, and by 0.472 on Perception (0.948 versus 0.476), its worst, which is the strongest category of all three agents (0.910 to 0.948).
 
 \subsection{Open-Weight Models}
 \label{sec:res-open}
 
-\textbf{The best open-weight coding agent beats every video model except the RL-trained one.} GLM-5 through OpenCode scores 0.572, fifth among all 37 systems, above VBVR-Pro-Wan2.1-I2V-14B (0.562), VBVR-Wan2.2 (0.517), Seedance~2.0 (0.499) and the seven video models below them; only the RL-trained A14B (0.670) is ahead. Kimi~K2.5 (0.557) is seventh. Out of domain, GLM-5 (0.664) and Kimi~K2.5 (0.660) are above every video model, whose best OOD score is 0.547.
+The best open-weight coding agent beats every video model except the RL-trained one. GLM-5 through OpenCode scores 0.572, fifth among all 37 systems, above VBVR-Pro-Wan2.1-I2V-14B (0.562), VBVR-Wan2.2 (0.517), Seedance~2.0 (0.499) and the seven video models below them; only the RL-trained A14B (0.670) is ahead. Kimi~K2.5 (0.557) is seventh. Out of domain, GLM-5 (0.664) and Kimi~K2.5 (0.660) are above every video model, whose best OOD score is 0.547.
 
-\textbf{The open-weight ranking is a ranking of agentic coding ability.} Scores fall from GLM-5 (0.572) through MiniMax~M2.5 (0.451) and DeepSeek~V3.2 (0.378) to a long tail below 0.3, and the \emph{Videos} column of Table~\ref{tab:main} tracks the drop: the top six wrote a video on 406 to 498 of 500 instances, Mistral~Large~3 on 254, gpt-oss-20b on 148, Qwen3-32B on 25, Llama~4~Maverick on 7. Gemma~3~27B, Gemma~3~12B, Magistral~Small and Llama~3.3~70B produced no video in 500 attempts and score 0, by the same rule that scores a video model that fails to generate. Table~\ref{tab:efficiency} traces these failures to tool use: the four zero lanes never call a tool and answer in prose. A model does not need to be the strongest coder to beat a trained video model here, but it does need to run a program.
+The open-weight ranking is a ranking of agentic coding ability. Scores fall from GLM-5 (0.572) through MiniMax~M2.5 (0.451) and DeepSeek~V3.2 (0.378) to a long tail below 0.3, and the \emph{Videos} column of Table~\ref{tab:main} tracks the drop. The top six wrote a video on 406 to 498 of 500 instances, Mistral~Large~3 on 254, gpt-oss-20b on 148, Qwen3-32B on 25, Llama~4~Maverick on 7. Gemma~3~27B, Gemma~3~12B, Magistral~Small and Llama~3.3~70B produced no video in 500 attempts and score 0, by the same rule that scores a video model that fails to generate. Table~\ref{tab:efficiency} traces these failures to tool use; the four zero lanes never call a tool and answer in prose. Whether a lane beats the trained video models or scores 0 turns first on whether the model runs a program at all.

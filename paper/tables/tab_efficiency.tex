@@ -1,10 +1,10 @@
 % Generated from bench/paper/table3_efficiency.csv (agents' own event logs; 500 instances per lane).
-\begin{table*}[t]
+\begin{table}[!htb]
 \centering
-\caption{Cost of a solution. Per-instance means over the 500 instances (median for wall-clock seconds), from each agent's own event log. Tool-use rate is the fraction of instances with at least one tool call; tokens are input/output per instance in thousands; timeouts are instances killed at the 1800\,s wall clock. The three closed agents and the six best open-weight lanes are shown; every lane that produced a video appears in \cref{fig:tools}.}
+\caption{Cost of a solution for the three closed agents and the six best open-weight lanes: per-instance means over the 500 instances (median for wall-clock seconds) from each agent's own event log. Tool use is the fraction of instances with at least one tool call, tokens are input and output per instance in thousands, and timeouts are instances killed at the 1800\,s wall clock. Every lane that produced a video appears in \cref{fig:tools}.}
 \label{tab:efficiency}
 \small
-\setlength{\tabcolsep}{5pt}
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrrrrrrr}
 \toprule
 Agent & Score & Videos & Tool use & Calls & Median s & In (k) & Out (k) & Timeouts \\
@@ -21,4 +21,4 @@ Devstral 2 123B & 0.350 & 494 & 0.99 & 38.7 & 344 & 839 & 13.1 & 0 \\
 Kimi K2 Thinking & 0.313 & 406 & 0.96 & 21.8 & 125 & 509 & 15.5 & 1 \\
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}

@@ -1,0 +1,41 @@
+from pathlib import Path
+import subprocess
+import cv2
+import numpy as np
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parent
+
+def main():
+    original = np.asarray(Image.open(ROOT / 'first_frame.png').convert('RGB'))
+    # The untouched outlines form closed boundaries. Isolate the white face
+    # containing a point in all three disks, without repainting any outline.
+    white = np.all(original == 255, axis=2).astype(np.uint8)
+    _, labels = cv2.connectedComponents(white, connectivity=8)
+    region = labels == labels[480, 480]
+    ys, xs = np.where(region)
+    ymin, ymax = ys.min(), ys.max()
+    out = ROOT / 'output'
+    out.mkdir(exist_ok=True)
+    command = ['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo',
+               '-vcodec', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '1024x1024',
+               '-r', '16', '-i', '-', '-an', '-c:v', 'libx264', '-preset',
+               'slow', '-crf', '0', '-pix_fmt', 'yuv420p', '-movflags',
+               '+faststart', str(out / 'video.mp4')]
+    proc = subprocess.Popen(command, stdin=subprocess.PIPE)
+    red = np.array([255, 0, 0], dtype=np.float64)
+    for i in range(60):
+        frame = original.copy()
+        if i:
+            progress = i / 59
+            edge = ymin - 4 + progress * (ymax - ymin + 9)
+            alpha = np.clip((edge - ys) / 4, 0, 1)
+            frame[ys, xs] = np.rint(original[ys, xs] * (1-alpha[:, None])
+                                    + red * alpha[:, None]).astype(np.uint8)
+        proc.stdin.write(frame.tobytes())
+    proc.stdin.close()
+    if proc.wait():
+        raise RuntimeError('Video encoding failed')
+
+if __name__ == '__main__':
+    main()

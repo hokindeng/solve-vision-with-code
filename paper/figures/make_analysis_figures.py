@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
 """Analysis figures for the paper (Section 5).
 
-    .venv/bin/python paper/figures/make_analysis_figures.py
+    .venv/bin/python paper/figures/make_analysis_figures.py            # writes the two PDFs and prints the checks
+    .venv/bin/python paper/figures/make_analysis_figures.py --check    # checks only, writes nothing; exit 1 on a mismatch
 
 Reads only the paper CSVs and the evaluator results:
-  bench/paper/table3_efficiency.csv      -> fig_tools_vs_score.pdf
-  bench/paper/table4_per_task_closed.csv -> fig_heatmap.pdf
+  bench/paper/table3_efficiency.csv      -> fig_tools_vs_score.pdf  (columns score, tool_calls_per_attempt, produced, timeouts)
+  bench/paper/table4_per_task_closed.csv -> fig_heatmap.pdf         (task, split, one column per closed agent)
   bench/results/codex-gpt-6-astra/*_vbvr_results.json (task -> category)
+Checks (--check): table3 score == table1 overall per model, table3 produced == bench/stats.json produced, the mean of the
+100 per-task scores in table4 == table1 overall for each closed agent, and the split labels are the two expected ones.
 
-Vector PDFs at ICML widths: column 3.25 in, full 6.75 in.
+Style: paper/figures/STYLE.md; the rcParams block, palette and widths are imported from make_figures.py so the two
+scripts cannot drift. HALF (2.9 in) for the scatter beside prose, FULL (6.0 in) for the heatmap.
 """
+import argparse
 import csv
 import glob
 import json
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -25,80 +31,79 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = Path(__file__).resolve().parent
-COL_W, FULL_W = 3.25, 6.75
+sys.path.insert(0, str(OUT))
+from make_figures import INK, GREY_1, GREY_2, GREY_3, AGENT, AGENT_OPEN, FULL, HALF, text_width  # noqa: E402
+from paper_tables import short, CLOSED as CLOSED_LANES  # noqa: E402  (bench/ is on sys.path after importing make_figures)
 
-plt.rcParams.update({
-    "font.family": "sans-serif",
-    "font.size": 7,
-    "axes.labelsize": 7,
-    "axes.titlesize": 7,
-    "xtick.labelsize": 6,
-    "ytick.labelsize": 6,
-    "legend.fontsize": 6,
-    "axes.linewidth": 0.5,
-    "xtick.major.width": 0.5,
-    "ytick.major.width": 0.5,
-    "pdf.fonttype": 42,
-    "ps.fonttype": 42,
-})
-CLOSED_C, OPEN_C = "#2a78d6", "#1baf7a"  # must match COLOR["closed"] / COLOR["open"] in make_figures.py
-INK, INK2, GRID = "#0b0b0b", "#52514e", "#dcdcd8"
-
-CLOSED = {"Codex/gpt-6-astra": "Codex", "Claude Code/Fable 5.1": "Claude Code", "Gemini CLI/3.1 Pro": "Gemini CLI"}
-# lanes called out in the text of Section 5
-LABEL = {**CLOSED, "GLM-5": "GLM-5", "Kimi K2.5": "Kimi K2.5", "MiniMax M2.5": "MiniMax M2.5",
-         "Qwen3-Coder-Next": "Qwen3-Coder-Next", "gpt-oss-120b": "gpt-oss-120b",
-         "Qwen3-32B": "Qwen3-32B", "Llama 4 Maverick": "Llama 4 Maverick",
-         "DeepSeek V3.2": "DeepSeek V3.2", "Nemotron Nano 3 30B": "Nemotron Nano 3"}
+CLOSED = {short(l): n for l, n in zip(CLOSED_LANES, ("Codex", "Claude Code", "Gemini CLI"))}  # CSV name -> short label
+CATS = ["Abstraction", "Perception", "Spatiality", "Transformation", "Knowledge"]
+SPLITS = [("In_Domain", "In-domain (50 tasks)"), ("Out_of_Domain", "Out-of-domain (50 tasks)")]
+HARD_MEAN = 0.7  # tasks whose three-agent mean is below this are named under the heatmap (Section 5: "on 13 the three-agent mean is below 0.7")
 
 
-def fig_tools_vs_score():
+def load_efficiency():
     rows = list(csv.DictReader(open(ROOT / "bench/paper/table3_efficiency.csv")))
-    rows = [r for r in rows if int(r["produced"]) > 0]  # lanes that made at least one video
-    fig, ax = plt.subplots(figsize=(COL_W, 2.4))
     for r in rows:
-        x, y = float(r["tool_calls_per_attempt"]), float(r["score"])
-        closed = r["model"] in CLOSED
-        ax.scatter(x, y, s=16 if closed else 11, color=CLOSED_C if closed else OPEN_C,
-                   edgecolor="white", linewidth=0.5, zorder=3)
-    # labels: hand-placed offsets so nothing collides
-    off = {"Codex": (4, -6), "Claude Code": (0, 6), "Gemini CLI": (4, -6), "GLM-5": (-2, 6), "Kimi K2.5": (-4, -3),
-           "MiniMax M2.5": (4, 0), "DeepSeek V3.2": (-4, 2), "Qwen3-Coder-Next": (4, -3), "gpt-oss-120b": (-4, 0),
-           "Qwen3-32B": (-2, 7)}
-    ha = {"GLM-5": "right", "DeepSeek V3.2": "right", "Claude Code": "center", "Kimi K2.5": "right",
-          "gpt-oss-120b": "right"}
-    for r in rows:
-        name = LABEL.get(r["model"])
-        if not name or name not in off:
-            continue
-        x, y = float(r["tool_calls_per_attempt"]), float(r["score"])
-        text = name + (f" ({r['timeouts']} timeouts)" if name == "Qwen3-Coder-Next" else "")
-        if name == "Qwen3-32B":  # the two "give up" lanes sit on top of each other at the origin
-            ax.annotate("Qwen3-32B,\nLlama 4 Maverick", (x, y), xytext=(1.55, 0.2), textcoords="data", fontsize=5.5,
-                        ha="left", va="center", color=INK,
-                        arrowprops=dict(arrowstyle="-", color=INK2, linewidth=0.4, shrinkA=0, shrinkB=2))
-            continue
-        ax.annotate(text, (x, y), xytext=off[name], textcoords="offset points", fontsize=5.5,
-                    ha=ha.get(name, "left"), va="center", color=INK)
+        r["x"], r["y"], r["n"] = float(r["tool_calls_per_attempt"]), float(r["score"]), int(r["produced"])
+        r["closed"] = r["model"] in CLOSED
+    return rows
+
+
+def load_per_task():
+    return list(csv.DictReader(open(ROOT / "bench/paper/table4_per_task_closed.csv")))
+
+
+# ---------------------------------------------------------------- score vs tool calls
+def fig_tools_vs_score(rows):
+    """One point per lane that produced at least one video: x = mean tool calls per instance (log), y = score, area
+    proportional to the number of produced videos (out of 500). Labels: the three closed agents, the three best
+    open-weight lanes, the lane with the most timeouts and the two lanes that give up at the origin (fewest calls)."""
+    rows = [r for r in rows if r["n"] > 0]
+    opens = sorted((r for r in rows if not r["closed"]), key=lambda r: -r["y"])
+    most_timeouts = max(rows, key=lambda r: int(r["timeouts"]))
+    fewest = sorted(rows, key=lambda r: r["x"])[:2]  # the two "give up" lanes, on top of each other at the origin
+    labelled = [r for r in rows if r["closed"]] + opens[:3] + [most_timeouts]
+
+    fig, ax = plt.subplots(figsize=(HALF, 2.45))
+    for r in sorted(rows, key=lambda r: -r["n"]):  # small discs drawn last so they stay visible
+        ax.scatter(r["x"], r["y"], s=4 + 40 * r["n"] / 500, facecolor=AGENT if r["closed"] else AGENT_OPEN,
+                   edgecolor=INK if r["closed"] else GREY_1, linewidth=0.4, zorder=3)
+    # labels: hand offsets in points (adjustText is not a dependency of the repo)
+    off = {"Codex": (0, 6, "center", "bottom"), "Claude Code": (4, -5, "left", "top"), "Gemini CLI": (5, 0, "left", "center"),
+           "GLM-5": (4, 4, "left", "bottom"), "Kimi K2.5": (-5, 2, "right", "center"), "MiniMax M2.5": (5, -1, "left", "center"),
+           "Qwen3-Coder-Next": (5, 0, "left", "center")}
+    for r in labelled:
+        name = CLOSED.get(r["model"], r["model"])
+        dx, dy, ha, va = off[name]
+        text = name + (f"\n({r['timeouts']} timeouts)" if r is most_timeouts else "")
+        ax.annotate(text, (r["x"], r["y"]), xytext=(dx, dy), textcoords="offset points", fontsize=6.5, ha=ha, va=va, color=INK, zorder=4)
+    fx, fy = fewest[0]["x"], fewest[0]["y"]
+    ax.annotate(", ".join(r["model"] for r in fewest), (fx, fy), xytext=(fx * 1.35, 0.17), textcoords="data", fontsize=6.5,
+                ha="left", va="center", color=INK, arrowprops=dict(arrowstyle="-", color=GREY_2, linewidth=0.5, shrinkA=0, shrinkB=2.5), zorder=4)
+
     ax.set_xscale("log")
-    ax.set_xlim(1.4, 300)
-    ax.set_ylim(-0.03, 1.0)
+    ax.set_xlim(1.4, 320)
+    ax.set_ylim(-0.03, 1.02)
     ax.set_xticks([2, 5, 10, 20, 50, 100, 200])
     ax.set_xticklabels(["2", "5", "10", "20", "50", "100", "200"])
     ax.xaxis.set_minor_formatter(NullFormatter())
-    ax.set_xlabel("Tool calls per instance (mean, log scale)")
-    ax.set_ylabel("VBVR-Pro-Bench score")
-    ax.grid(True, color=GRID, linewidth=0.4, zorder=0)
-    for s in ("top", "right"):
-        ax.spines[s].set_visible(False)
-    handles = [Line2D([], [], linestyle="none", marker="o", markersize=4, color=CLOSED_C, label="closed agent"),
-               Line2D([], [], linestyle="none", marker="o", markersize=3.3, color=OPEN_C, label="OpenCode + open-weight model")]
-    ax.legend(handles=handles, loc="upper right", bbox_to_anchor=(1.0, 0.84), frameon=False, handletextpad=0.2, borderaxespad=0.2)
-    fig.tight_layout(pad=0.3)
+    ax.tick_params(axis="x", which="minor", length=1.5)
+    ax.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
+    ax.set_yticklabels(["0", "0.2", "0.4", "0.6", "0.8", "1.0"])
+    ax.set_xlabel("Tool calls per instance (mean, log scale)", labelpad=3)
+    ax.set_ylabel("Score", labelpad=3)
+    handles = [Line2D([], [], linestyle="none", marker="o", markersize=4.2, markerfacecolor=AGENT, markeredgecolor=INK, markeredgewidth=0.4, label="Coding agent, closed model"),
+               Line2D([], [], linestyle="none", marker="o", markersize=4.2, markerfacecolor=AGENT_OPEN, markeredgecolor=GREY_1, markeredgewidth=0.4, label="Coding agent, open-weight model"),
+               Line2D([], [], linestyle="none", marker="o", markersize=2.2, markerfacecolor="white", markeredgecolor=GREY_1, markeredgewidth=0.4, label="Area $\\propto$ videos produced / 500")]
+    leg = ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.0, 0.80), fontsize=6.5, handletextpad=0.4, labelspacing=0.3, borderaxespad=0.2)
+    for t in leg.get_texts():
+        t.set_color(GREY_1)
+    fig.subplots_adjust(left=0.12, right=0.985, top=0.985, bottom=0.15)
     fig.savefig(OUT / "fig_tools_vs_score.pdf")
     plt.close(fig)
 
 
+# ---------------------------------------------------------------- per-task heatmap
 def task_categories():
     f = glob.glob(str(ROOT / "bench/results/codex-gpt-6-astra/*_vbvr_results.json"))[0]
     cat = {}
@@ -107,50 +112,114 @@ def task_categories():
     return cat
 
 
-def fig_heatmap():
-    rows = list(csv.DictReader(open(ROOT / "bench/paper/table4_per_task_closed.csv")))
+def spread(xs, gap, lo, hi, iters=200):
+    """Push sorted positions apart until neighbours are >= gap apart, staying inside [lo, hi]; deterministic."""
+    xs = [float(x) for x in xs]
+    for _ in range(iters):
+        moved = False
+        for k in range(len(xs) - 1):
+            d = xs[k + 1] - xs[k]
+            if d < gap - 1e-9:
+                xs[k] -= (gap - d) / 2; xs[k + 1] += (gap - d) / 2; moved = True
+        xs = [min(max(x, lo), hi) for x in xs]
+        if not moved:
+            break
+    return xs
+
+
+def fig_heatmap(rows):
+    """3 agent rows x 100 task columns, in-domain block left and out-of-domain block right. Within a block tasks are
+    grouped by category (band above, labels on alternating rows so narrow bands never overprint) and sorted by the
+    three-agent mean, ascending. One single-hue ramp, white to the accent. No per-task ticks: tasks whose three-agent
+    mean is below HARD_MEAN are named under the axis with a thin leader; every other task id is omitted."""
     cat = task_categories()
     agents = list(CLOSED)
-    cats = ["Abstraction", "Perception", "Spatiality", "Transformation", "Knowledge"]
-    cmap = LinearSegmentedColormap.from_list("blues", ["#f4f7fb", "#c6d9f1", "#7fb0e3", "#2a78d6", "#123f77"])
-    fig, axes = plt.subplots(2, 1, figsize=(FULL_W, 2.55), gridspec_kw={"hspace": 1.25})
-    for ax, split, title in zip(axes, ["In_Domain", "Out_of_Domain"], ["In-domain (50 tasks)", "Out-of-domain (50 tasks)"]):
+    cmap = LinearSegmentedColormap.from_list("accent", ["#ffffff", AGENT])
+    fig, axes = plt.subplots(1, 2, figsize=(FULL, 2.2), gridspec_kw={"wspace": 0.05, "width_ratios": [50, 50]})
+    for ax, (split, title) in zip(axes, SPLITS):
         sub = [r for r in rows if r["split"] == split]
-        # group by category, then by mean score ascending inside the group
-        sub.sort(key=lambda r: (cats.index(cat[r["task"]]), np.mean([float(r[a]) for a in agents])))
+        sub.sort(key=lambda r: (CATS.index(cat[r["task"]]), np.mean([float(r[a]) for a in agents])))
         M = np.array([[float(r[a]) for r in sub] for a in agents])
         im = ax.imshow(M, cmap=cmap, vmin=0, vmax=1, aspect="auto", interpolation="nearest")
-        ax.set_yticks(range(3))
-        ax.set_yticklabels([CLOSED[a] for a in agents])
-        ax.set_xticks(range(len(sub)))
-        ax.set_xticklabels([r["task"].split("_")[0] for r in sub], rotation=90, fontsize=4.2)
-        ax.tick_params(axis="x", length=1.5, pad=1)
-        ax.tick_params(axis="y", length=0)
+        # row borders in paper white; no per-cell vertical borders (a 3.5 pt cell with a 0.5 pt border reads as a moire)
+        for k in range(len(agents) + 1):
+            ax.axhline(k - 0.5, color="white", linewidth=0.5)
+        ax.set_yticks(range(len(agents)))
+        ax.set_yticklabels([CLOSED[a] for a in agents], fontsize=7, color=GREY_1)
+        ax.tick_params(axis="y", length=0, pad=3)
+        ax.set_xticks([])
         for s in ax.spines.values():
             s.set_visible(False)
-        # category bands above the panel
+        # category bands above the block, labels alternating between two rows
         start = 0
-        for c in cats:
+        for k, c in enumerate(CATS):
             n = sum(1 for r in sub if cat[r["task"]] == c)
             if n == 0:
                 continue
-            ax.plot([start - 0.4, start + n - 0.6], [-0.75, -0.75], color=INK2, linewidth=0.8, clip_on=False)
-            ax.text(start + n / 2 - 0.5, -0.95, c, ha="center", va="bottom", fontsize=5.5, color=INK2, clip_on=False)
+            ax.plot([start - 0.35, start + n - 0.65], [-0.72, -0.72], color=GREY_1, linewidth=0.6, clip_on=False, solid_capstyle="butt")
+            ax.text(start + n / 2 - 0.5, -0.9 - 0.4 * (k % 2), c, ha="center", va="bottom", fontsize=6.5, color=GREY_1, clip_on=False)
             if start > 0:
-                ax.axvline(start - 0.5, color="white", linewidth=1.2)
+                ax.axvline(start - 0.5, color="white", linewidth=1.6)
             start += n
-        ax.set_title(title, loc="left", fontsize=6.5, pad=13, color=INK)
-    fig.subplots_adjust(left=0.085, right=0.92, top=0.86, bottom=0.14)
-    cax = fig.add_axes([0.935, 0.14, 0.008, 0.72])
-    cb = fig.colorbar(im, cax=cax)
-    cb.set_label("mean score over 5 instances", fontsize=5.5, labelpad=2)
-    cb.ax.tick_params(labelsize=5.5, width=0.4, length=2)
+        # the hard tasks, named under the axis with a leader to the column
+        hard = [i for i, r in enumerate(sub) if np.mean([float(r[a]) for a in agents]) < HARD_MEAN]
+        gap = 1.15 * text_width(ax, "G", fontsize=5.5) if hard else 0  # a rotated 5.5 pt label is one cap-height wide
+        for i, x in zip(hard, spread(hard, gap, -0.5, len(sub) - 0.5)):
+            ax.plot([i, x], [2.55, 2.92], color=GREY_2, linewidth=0.4, clip_on=False, zorder=1)
+            ax.text(x, 2.98, sub[i]["task"].split("_")[0], rotation=90, ha="center", va="top", fontsize=5.5, color=INK, clip_on=False)
+        ax.text(len(sub) / 2 - 0.5, 3.9, title, ha="center", va="top", fontsize=7.5, color=GREY_1, clip_on=False)  # block title under the task names
+        ax.set_xlim(-0.5, len(sub) - 0.5)
+        ax.set_ylim(len(agents) - 0.5, -0.5)  # the bands and leaders are drawn outside; keep the cells flush with the axes
+    axes[1].tick_params(axis="y", labelleft=False)
+    fig.subplots_adjust(left=0.085, right=0.895, top=0.82, bottom=0.31)
+    cax = fig.add_axes([0.912, 0.31, 0.009, 0.51])
+    cb = fig.colorbar(im, cax=cax, ticks=[0, 0.5, 1.0])
+    cb.set_ticklabels(["0.000", "0.500", "1.000"])
+    cb.set_label("mean score over 5 instances", fontsize=6.5, labelpad=3, color=GREY_1)
+    cb.ax.tick_params(labelsize=6.5, width=0.4, length=2, color=GREY_1)
     cb.outline.set_linewidth(0.4)
+    cb.outline.set_edgecolor(GREY_1)
     fig.savefig(OUT / "fig_heatmap.pdf")
     plt.close(fig)
 
 
-if __name__ == "__main__":
-    fig_tools_vs_score()
-    fig_heatmap()
+# ---------------------------------------------------------------- checks
+def checks(eff, per_task):
+    """Recompute what the two figures draw against the other sources of record; return the list of mismatches."""
+    bad = []
+    lead = {r["model"]: r for r in csv.DictReader(open(ROOT / "bench/paper/table1_leaderboard.csv"))}
+    stats = json.load(open(ROOT / "bench/stats.json"))
+    stats_by_name = {short(lane): s for lane, s in stats.items()}
+    for r in eff:
+        if r["model"] in lead and abs(r["y"] - float(lead[r["model"]]["overall"])) > 1e-9:
+            bad.append(f"table3 score {r['y']} != table1 overall {lead[r['model']]['overall']} for {r['model']}")
+        if r["model"] in stats_by_name and r["n"] != stats_by_name[r["model"]]["produced"]:
+            bad.append(f"table3 produced {r['n']} != stats.json {stats_by_name[r['model']]['produced']} for {r['model']}")
+    splits = {r["split"] for r in per_task}
+    if splits != {s for s, _ in SPLITS} or len(per_task) != 100:
+        bad.append(f"table4: {len(per_task)} rows, splits {sorted(splits)}")
+    for a in CLOSED:
+        m = np.mean([float(r[a]) for r in per_task])
+        if abs(m - float(lead[a]["overall"])) > 1e-9:
+            bad.append(f"table4 mean over 100 tasks {m} != table1 overall {lead[a]['overall']} for {a}")
+    n_hard = sum(1 for r in per_task if np.mean([float(r[a]) for a in CLOSED]) < HARD_MEAN)
+    print(f"lanes with a video: {sum(1 for r in eff if r['n'] > 0)}; tasks with three-agent mean < {HARD_MEAN}: {n_hard}")
+    print("checks:", "all agree" if not bad else "\n  ".join(["MISMATCH"] + bad))
+    return bad
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--check", action="store_true", help="print the checks only, write nothing; exit 1 on a mismatch")
+    a = ap.parse_args()
+    eff, per_task = load_efficiency(), load_per_task()
+    bad = checks(eff, per_task)
+    if a.check:
+        sys.exit(1 if bad else 0)
+    fig_tools_vs_score(eff)
+    fig_heatmap(per_task)
     print("wrote", OUT / "fig_tools_vs_score.pdf", OUT / "fig_heatmap.pdf")
+
+
+if __name__ == "__main__":
+    main()

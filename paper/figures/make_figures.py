@@ -5,14 +5,17 @@
     .venv/bin/python paper/figures/make_figures.py --check    # checks only, writes nothing
 
 Writes
-    paper/figures/fig_leaderboard.pdf   overall score of all 37 systems + in/out-of-domain dumbbells (two-column)
-    paper/figures/fig_ood.pdf           out-of-domain minus in-domain per system (single column)
-    paper/tables/tab_main.tex           main leaderboard table (table*)
+    paper/figures/fig_leaderboard.pdf   overall score of all 37 systems with in/out-of-domain markers (FULL, \textwidth)
+    paper/figures/fig_ood.pdf           in-domain -> out-of-domain dumbbell per system (HALF, beside prose)
+    paper/tables/tab_main.tex           main leaderboard table
     paper/tables/tab_categories.tex     coding agents x five categories
 
 Sources (read only): bench/paper/table1_leaderboard.csv, bench/paper/table2_categories.csv,
 bench/results/<lane>/<lane>_vbvr_results.json (per-instance scores; the produced-video count comes from here),
 bench/stats.json (cross-check of the produced counts). Video-model rows are the published VBVR-Pro leaderboard.
+
+Style: paper/figures/STYLE.md (one-column ICML template, \textwidth 6.0 in; Times; INK/greys + one accent).
+The rcParams block below is the one from STYLE.md section 4; make_analysis_figures.py imports it from here.
 """
 import argparse, csv, json, sys
 from pathlib import Path
@@ -33,9 +36,42 @@ CSV_DIR = ROOT / "bench" / "paper"
 FIG_DIR = ROOT / "paper" / "figures"
 TAB_DIR = ROOT / "paper" / "tables"
 
-SINGLE, DOUBLE = 3.25, 6.75  # ICML column widths (in)
-COLOR = {"closed": "#2a78d6", "open": "#1baf7a", "video": "#eb6834"}  # validated categorical triple
-KIND_LABEL = {"closed": "Coding agent, closed model", "open": "Coding agent, open-weight model (OpenCode)", "video": "Video model (VBVR-Pro leaderboard)"}
+# ---------------------------------------------------------------- style (STYLE.md section 3-4, verbatim)
+INK, GREY_1, GREY_2, GREY_3 = "#111111", "#555555", "#999999", "#dddddd"
+AGENT, AGENT_OPEN, VIDEO = "#2a5db0", "#a9c0e6", "#a8a29a"
+FULL, WIDE, HALF, WRAP = 6.0, 5.4, 2.9, 2.7          # inches, = 1.0 / 0.9 / 0.48 / 0.45 \textwidth
+
+plt.rcParams.update({
+    "font.family": "serif",
+    "font.serif": ["Times New Roman", "Times", "STIXGeneral", "DejaVu Serif"],   # verified present on this Mac
+    "mathtext.fontset": "stix",                 # Times-like math
+    "font.size": 8, "axes.labelsize": 8, "axes.titlesize": 8,
+    "xtick.labelsize": 7, "ytick.labelsize": 7, "legend.fontsize": 7,
+    "text.color": INK, "axes.labelcolor": INK, "axes.edgecolor": INK,
+    "xtick.color": INK, "ytick.color": INK,
+    "axes.linewidth": 0.6, "xtick.major.width": 0.6, "ytick.major.width": 0.6,
+    "xtick.major.size": 2.5, "ytick.major.size": 2.5, "xtick.direction": "out", "ytick.direction": "out",
+    "axes.spines.top": False, "axes.spines.right": False,
+    "axes.grid": False, "axes.axisbelow": True,
+    "lines.linewidth": 1.2, "lines.markersize": 4, "patch.linewidth": 0.6,
+    "legend.frameon": False, "legend.handlelength": 1.2, "legend.borderaxespad": 0.2,
+    "figure.dpi": 200, "savefig.dpi": 300, "savefig.bbox": "tight", "savefig.pad_inches": 0.02,
+    "pdf.fonttype": 42, "ps.fonttype": 42,     # embed TrueType so Times survives in the PDF
+    "figure.facecolor": "white", "axes.facecolor": "white", "savefig.facecolor": "white",
+})
+
+COLOR = {"closed": AGENT, "open": AGENT_OPEN, "video": VIDEO}
+KIND_LABEL = {"closed": "Coding agent, closed model", "open": "Coding agent, open-weight model", "video": "Video model"}
+
+
+def text_width(ax, s, **kw):
+    """Width of the string in data units on this axes (measured with the figure's renderer, then removed)."""
+    t = ax.text(0, 0, s, **kw)
+    bb = t.get_window_extent(renderer=ax.figure.canvas.get_renderer())
+    t.remove()
+    inv = ax.transData.inverted()
+    return inv.transform((bb.x1, 0))[0] - inv.transform((bb.x0, 0))[0]
+
 
 # CSV model name -> paper display name (everything else keeps its CSV name)
 DISPLAY = {
@@ -46,13 +82,6 @@ DISPLAY = {
 }
 # VBVR-Pro paper, Table 8: in-domain category means of the released baseline (the only video-model category numbers in the brief)
 VIDEO_CAT_ID = {"model": "VBVR-Pro-Wan2.2-TI2V-5B", "Abstraction": 0.578, "Perception": 0.476, "Spatiality": 0.480, "Transformation": 0.724, "Knowledge": 0.511}
-
-plt.rcParams.update({
-    "font.family": "sans-serif", "font.sans-serif": ["Helvetica", "Arial", "DejaVu Sans"], "font.size": 7,
-    "axes.labelsize": 7, "xtick.labelsize": 7, "ytick.labelsize": 7, "legend.fontsize": 7,
-    "pdf.fonttype": 42, "ps.fonttype": 42, "axes.linewidth": 0.5, "xtick.major.width": 0.5, "ytick.major.width": 0.5,
-    "axes.spines.top": False, "axes.spines.right": False,
-})
 
 
 # ---------------------------------------------------------------- data
@@ -100,88 +129,111 @@ def per_instance(lane):
 
 
 # ---------------------------------------------------------------- figures
-def fig_leaderboard(rows, path):
-    n = len(rows)
-    fig_h = 0.155 * n + 0.75
-    fig, (ax, bx) = plt.subplots(1, 2, figsize=(DOUBLE, fig_h), sharey=True, gridspec_kw=dict(width_ratios=[1.45, 1.0], wspace=0.06))
-    y = list(range(n))[::-1]
-    cols = [COLOR[r["kind"]] for r in rows]
-    ax.barh(y, [r["overall"] for r in rows], height=0.72, color=cols, linewidth=0)
-    for yi, r in zip(y, rows):
-        ax.text(r["overall"] + 0.012, yi, f"{r['overall']:.3f}", va="center", ha="left", fontsize=6.5, color="#333")
-    ax.set_yticks(y)
-    ax.set_yticklabels([r["name"] + (" $^\\dagger$" if r["overall"] == 0 else "") for r in rows])
-    ax.set_xlim(0, 1.08)
-    ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
-    ax.set_xlabel("Overall score (mean over 500 instances)")
-    ax.set_ylim(-0.7, n - 0.3)
-    ax.tick_params(axis="y", length=0)
-    ax.grid(axis="x", color="#e5e5e5", linewidth=0.4)
-    ax.set_axisbelow(True)
-
-    # dumbbell: hollow = in-domain, filled = out-of-domain
-    for yi, r in zip(y, rows):
-        c = COLOR[r["kind"]]
-        bx.plot([r["ID"], r["OOD"]], [yi, yi], color=c, linewidth=1.0, solid_capstyle="round", zorder=1)
-        bx.plot(r["ID"], yi, marker="o", markersize=3.6, markerfacecolor="white", markeredgecolor=c, markeredgewidth=0.9, zorder=2)
-        bx.plot(r["OOD"], yi, marker="o", markersize=3.6, markerfacecolor=c, markeredgecolor=c, markeredgewidth=0.9, zorder=3)
-    bx.set_xlim(-0.02, 1.02)
-    bx.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
-    bx.set_xlabel("In-domain (hollow) vs. out-of-domain (filled)")
-    bx.tick_params(axis="y", length=0)
-    bx.grid(axis="x", color="#e5e5e5", linewidth=0.4)
-    bx.set_axisbelow(True)
-
-    handles = [Patch(color=COLOR[k], label=KIND_LABEL[k]) for k in ("closed", "open", "video")]
-    handles += [Line2D([], [], marker="o", color="#555", markerfacecolor="white", markersize=3.6, linewidth=0, label="In-domain (50 tasks)"),
-                Line2D([], [], marker="o", color="#555", markerfacecolor="#555", markersize=3.6, linewidth=0, label="Out-of-domain (50 tasks)")]
-    fig.legend(handles=handles, loc="lower center", ncol=3, frameon=False, bbox_to_anchor=(0.5, 0.0), handlelength=1.2, columnspacing=1.2)
-    fig.subplots_adjust(left=0.235, right=0.99, top=0.995, bottom=0.72 / fig_h)
-    fig.savefig(path)
-    plt.close(fig)
-    return fig_h
-
-
 def is_trained(r):
     """Video models fine-tuned or RL-trained on VBVR / VBVR-Pro task families (the VBVR-* rows of the leaderboard)."""
     return r["kind"] == "video" and r["csv_name"].startswith("VBVR")
 
 
-def fig_ood(rows, path):
-    rows = [r for r in rows if r["kind"] == "video" or r["overall"] > 0]  # lanes with no video have no delta
-    rows = sorted(rows, key=lambda r: r["OOD"] - r["ID"], reverse=True)
-    n = len(rows)
-    fig_h = 0.125 * n + 1.05
-    fig, ax = plt.subplots(figsize=(SINGLE, fig_h))
+def fig_leaderboard(rows, path, n_values=6):
+    """All 37 systems sorted by overall score: one horizontal bar per system coloured by family, the in-domain (hollow
+    circle) and out-of-domain (solid diamond) scores as markers on the same row, a dashed rule at the best video model.
+    Values at the bar end for the top n_values systems only (the rest are in Table 1). The four systems with no video in
+    500 attempts (score 0) are listed in a footnote instead of drawn as empty bars.
+    Columns: overall, in_domain, out_of_domain, kind of bench/paper/table1_leaderboard.csv."""
+    shown = [r for r in rows if r["overall"] > 0]
+    zeros = [r for r in rows if r["overall"] == 0]
+    n = len(shown)
+    fig, ax = plt.subplots(figsize=(FULL, 3.65))
     y = list(range(n))[::-1]
-    d = [r["OOD"] - r["ID"] for r in rows]
-    # three groups: coding agents (blue), VBVR-trained video models (solid orange), untrained video models (hatched orange)
-    for yi, r, di in zip(y, rows, d):
-        if r["kind"] != "video":
-            ax.barh(yi, di, height=0.72, color=COLOR["closed"], linewidth=0)
-        elif is_trained(r):
-            ax.barh(yi, di, height=0.72, color=COLOR["video"], linewidth=0)
-        else:
-            ax.barh(yi, di, height=0.72, facecolor="white", edgecolor=COLOR["video"], linewidth=0.6, hatch="//////")
-        ax.text(di + (0.006 if di >= 0 else -0.006), yi, f"{di:+.3f}", va="center", ha="left" if di >= 0 else "right", fontsize=6, color="#333")
-    ax.axvline(0, color="#222", linewidth=0.6, zorder=3)
-    ax.set_yticks(y)
-    ax.set_yticklabels([r["name"] for r in rows], fontsize=6.5)
-    ax.tick_params(axis="y", length=0)
-    lo, hi = min(d), max(d)
-    ax.set_xlim(lo - 0.10, hi + 0.10)
-    ax.set_xlabel("Out-of-domain minus in-domain score")
+    for xv in (0.2, 0.4, 0.6, 0.8, 1.0):  # value-axis rules (the "horizontal gridlines" of a horizontal bar chart)
+        ax.axvline(xv, color=GREY_3, linewidth=0.4, zorder=0)
+    ax.barh(y, [r["overall"] for r in shown], height=0.72, color=[COLOR[r["kind"]] for r in shown], linewidth=0, zorder=2)
+    for yi, r in zip(y, shown):
+        ax.plot(r["ID"], yi, marker="o", markersize=3.2, markerfacecolor="white", markeredgecolor=INK, markeredgewidth=0.6, linestyle="none", zorder=4)
+        ax.plot(r["OOD"], yi, marker="D", markersize=2.9, markerfacecolor=INK, markeredgecolor="white", markeredgewidth=0.5, linestyle="none", zorder=4)
+    best_video = max((r for r in rows if r["kind"] == "video"), key=lambda r: r["overall"])
+    ax.set_xlim(0, 1.06)
     ax.set_ylim(-0.7, n - 0.3)
-    ax.grid(axis="x", color="#e5e5e5", linewidth=0.4)
-    ax.set_axisbelow(True)
-    handles = [Patch(color=COLOR["closed"], label="Coding agent (no training on the benchmark)"),
-               Patch(color=COLOR["video"], label="Video model trained on VBVR / VBVR-Pro task families"),
-               Patch(facecolor="white", edgecolor=COLOR["video"], hatch="//////", linewidth=0.6, label="Video model without benchmark training")]
-    fig.legend(handles=handles, loc="lower left", ncol=1, frameon=False, handlelength=1.2, bbox_to_anchor=(0.02, 0.0), borderaxespad=0.0)
-    fig.subplots_adjust(left=0.44, right=0.985, top=0.995, bottom=0.92 / fig_h)
+    w = text_width(ax, "0.000", fontsize=7)
+    for yi, r in list(zip(y, shown))[:n_values]:
+        x = r["overall"] + 0.014
+        for m in sorted((r["ID"], r["OOD"])):  # a marker under the text: step past it
+            if x - 0.012 <= m <= x + w:
+                x = m + 0.014
+        if x - 0.012 <= best_video["overall"] <= x + w:  # the dashed rule under the text: step past it
+            x = best_video["overall"] + 0.012
+        ax.text(x, yi, f"{r['overall']:.3f}", va="center", ha="left", fontsize=7, color=INK)
+    ax.axvline(best_video["overall"], color=GREY_2, linewidth=0.6, linestyle=(0, (3, 2)), zorder=1)
+    ax.text(best_video["overall"] - 0.010, y[-1], f"best video model {best_video['overall']:.3f}", ha="right", va="center", fontsize=7, color=GREY_2)
+
+    ax.set_yticks(y)
+    ax.set_yticklabels([r["name"] for r in shown], fontsize=7)
+    ax.tick_params(axis="y", length=0, pad=4)
+    ax.set_xticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
+    ax.set_xticklabels(["0", "0.2", "0.4", "0.6", "0.8", "1.0"])
+    ax.set_xlabel("Score (mean over 500 instances)", labelpad=3)
+    ax.spines["left"].set_visible(False)
+
+    fam = [Patch(color=COLOR[k], label=KIND_LABEL[k]) for k in ("closed", "open", "video")]
+    mk = [Line2D([], [], marker="o", markersize=3.2, markerfacecolor="white", markeredgecolor=INK, markeredgewidth=0.6, linestyle="none", label="In-domain (50 tasks)"),
+          Line2D([], [], marker="D", markersize=2.9, markerfacecolor=INK, markeredgecolor="white", markeredgewidth=0.5, linestyle="none", label="Out-of-domain (50 tasks)")]
+    handles = [fam[0], mk[0], fam[1], mk[1], fam[2]]  # column-major fill -> row 1 the three families, row 2 the two markers
+    leg = fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, 0.04), ncol=3, fontsize=6.5, handletextpad=0.5, columnspacing=1.6, labelspacing=0.3, borderaxespad=0)
+    for t in leg.get_texts():
+        t.set_color(GREY_1)
+    if zeros:
+        fig.text(0.5, 0.0, "No video in any of the 500 attempts (score 0): " + ", ".join(r["name"] for r in zeros) + ".",
+                 ha="center", va="bottom", fontsize=6.5, color=GREY_1)
+    fig.subplots_adjust(left=0.245, right=0.99, top=0.995, bottom=0.20)
     fig.savefig(path)
     plt.close(fig)
-    return fig_h
+
+
+def ood_group(r):
+    return "agent" if r["kind"] != "video" else "trained" if is_trained(r) else "untrained"
+
+
+# family colours; the untrained video models take a tint of VIDEO, as AGENT_OPEN is a tint of AGENT
+VIDEO_UNTRAINED = "#d3cfc9"
+OOD_COLOR = {"agent": AGENT, "trained": VIDEO, "untrained": VIDEO_UNTRAINED}
+OOD_LABEL = {"agent": "Coding agent (no training on the benchmark)", "trained": "Video model trained on VBVR / VBVR-Pro families",
+             "untrained": "Video model without benchmark training"}
+
+
+def fig_ood(rows, path):
+    """Dumbbell per system with at least one video: hollow dot at the in-domain score, solid dot at the out-of-domain
+    score, connector between them; rows sorted by OOD - ID (gains at the top), every row named. Coding agents in the
+    accent, video models trained on the benchmark's task families in the video grey, untrained video models in its tint.
+    Columns: in_domain, out_of_domain, kind of bench/paper/table1_leaderboard.csv (the same numbers as Table 1)."""
+    rows = [r for r in rows if r["kind"] == "video" or r["overall"] > 0]  # lanes with no video have no shift
+    rows = sorted(rows, key=lambda r: r["OOD"] - r["ID"], reverse=True)
+    n = len(rows)
+    fig, ax = plt.subplots(figsize=(HALF, 3.55))
+    y = list(range(n))[::-1]
+    for xv in (0.2, 0.4, 0.6, 0.8, 1.0):
+        ax.axvline(xv, color=GREY_3, linewidth=0.4, zorder=0)
+    for yi, r in zip(y, rows):
+        c = OOD_COLOR[ood_group(r)]
+        ax.plot([r["ID"], r["OOD"]], [yi, yi], color=GREY_2, linewidth=0.8, solid_capstyle="butt", zorder=2)  # connector; the dots carry the family
+        ax.plot(r["ID"], yi, marker="o", markersize=3.6, markerfacecolor="white", markeredgecolor=c, markeredgewidth=0.8, linestyle="none", zorder=3)
+        ax.plot(r["OOD"], yi, marker="o", markersize=3.6, markerfacecolor=c, markeredgecolor=c, markeredgewidth=0.8, linestyle="none", zorder=4)
+    ax.set_xlim(-0.02, 1.02)
+    ax.set_ylim(-0.7, n - 0.3)
+    ax.set_xticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
+    ax.set_xticklabels(["0", "0.2", "0.4", "0.6", "0.8", "1.0"])
+    ax.set_yticks(y)
+    ax.set_yticklabels([r["name"] for r in rows], fontsize=6)
+    ax.tick_params(axis="y", length=0, pad=3)
+    ax.spines["left"].set_visible(False)
+    fig.text(0.5, 0.145, "Score: in-domain (hollow) to out-of-domain (solid)", ha="center", va="bottom", fontsize=7, color=INK)  # centred on the figure: wider than the axes
+    handles = [Line2D([], [], color=GREY_2, linewidth=0.8, marker="o", markersize=3.6, markerfacecolor=OOD_COLOR[g],
+                      markeredgecolor=OOD_COLOR[g], label=OOD_LABEL[g]) for g in ("agent", "trained", "untrained")]
+    leg = fig.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, 0.0), ncol=1, fontsize=6.5, handletextpad=0.6, labelspacing=0.3, borderaxespad=0)
+    for t in leg.get_texts():
+        t.set_color(GREY_1)
+    fig.subplots_adjust(left=0.46, right=0.985, top=0.995, bottom=0.215)
+    fig.savefig(path)
+    plt.close(fig)
 
 
 # ---------------------------------------------------------------- tables
@@ -206,16 +258,16 @@ def tab_main(rows, produced, path):
     best_video = max((r for r in rows if r["kind"] == "video"), key=lambda r: r["overall"])
     out = [
         "% Generated by paper/figures/make_figures.py from bench/paper/table1_leaderboard.csv and bench/results/ -- do not edit by hand.",
-        "\\begin{table*}[t]", "\\centering",
+        "\\begin{table}[!tp]", "\\centering",
         "\\caption{VBVR-Pro-Bench (video setting, 100 tasks $\\times$ 5 instances) leaderboard. Every system is scored by the unmodified official "
         "rule-based evaluator of the benchmark kit; the score is the mean over all 500 instances, and an instance for which the system produced no video "
         "counts 0. Coding-agent rows are our runs (one attempt per instance, sandboxed, no image or video model available); video-model rows are the published "
-        "VBVR-Pro leaderboard numbers~\\citep{xu2026vbvrpro}, not rerun by us. \\emph{Rank} is the position among all 37 systems. \\emph{Videos} is the number of "
+        "VBVR-Pro leaderboard numbers~\\citep{vbvrpro2026}, not rerun by us. \\emph{Rank} is the position among all 37 systems. \\emph{Videos} is the number of "
         "instances for which the agent wrote a video file (--- for video models, which we did not run). In-domain (ID) tasks are the 50 families with "
         "training data in VBVR-Pro, out-of-domain (OOD) the 50 families held out from all training. Best per column in bold, second underlined; the best "
         "coding agent and the best video model are shaded. "
         "$^\\dagger$No video in any of the 500 attempts (the model answers in prose and never calls a tool).}",
-        "\\label{tab:main}", "\\small", "\\setlength{\\tabcolsep}{5pt}",
+        "\\label{tab:main}", "\\footnotesize", "\\setlength{\\tabcolsep}{5pt}",
         "\\begin{tabular}{rlcccc}", "\\toprule",
         "Rank & System & Overall & ID & OOD & Videos / 500 \\\\",
     ]
@@ -230,7 +282,7 @@ def tab_main(rows, produced, path):
                 prod = f"{p}$^\\dagger$" if p == 0 else str(p)
             cells = [fmt(r[c], *bests[c]) for c in ("overall", "ID", "OOD")]
             out.append(f"{shade}{rank[r['csv_name']]} & {tex_name(r['name'])} & " + " & ".join(cells) + f" & {prod} \\\\")
-    out += ["\\bottomrule", "\\end{tabular}", "\\end{table*}", ""]
+    out += ["\\bottomrule", "\\end{tabular}", "\\end{table}", ""]
     path.write_text("\n".join(out))
 
 
@@ -249,14 +301,13 @@ def tab_categories(cats, rows, n_tasks, n_tasks_id, path, n_open=8):
     counts = " & ".join(f"({n_tasks[c]})" for c in CATS)
     out = [
         "% Generated by paper/figures/make_figures.py from bench/paper/table2_categories.csv -- do not edit by hand.",
-        "\\begin{table*}[t]", "\\centering",
-        "\\caption{Coding-agent score by task category (mean over the 5 instances of every task in the category, both splits; the number of tasks per "
-        "category is in the second header row). The three closed-model agents and the eight best open-weight models are shown; best per column in bold, second "
-        "underlined. The last row is the in-domain category profile of the released VBVR-Pro baseline video model as reported in the VBVR-Pro "
-        "paper~\\citep[Table~8]{xu2026vbvrpro}; because it covers the 50 in-domain tasks only, the block above it restricts the three closed-model "
-        "agents to the same 50 tasks (task counts per category in that block's header row; computed from the per-instance results). "
-        "Rows in the in-domain block are not ranked.}",
-        "\\label{tab:categories}", "\\small", "\\setlength{\\tabcolsep}{4pt}",
+        "\\begin{table}[H]", "\\centering",
+        "\\caption{Score by task category for the three closed-model agents and the eight best open-weight models (mean over the 5 instances of every "
+        "task in the category, both splits; task counts per category in the second header row; best per column in bold, second underlined). The last row "
+        "is the in-domain category profile of the released VBVR-Pro baseline video model as reported in the VBVR-Pro paper~\\citep[Table~8]{vbvrpro2026}, "
+        "and because it covers the 50 in-domain tasks only, the block above it restricts the three closed-model agents to the same 50 tasks, computed from "
+        "the per-instance results. Rows in the in-domain block are not ranked.}",
+        "\\label{tab:categories}", "\\footnotesize", "\\setlength{\\tabcolsep}{4pt}",
         "\\begin{tabular}{lcccccc}", "\\toprule",
         f"System & {head} & Overall \\\\", f"\\emph{{Tasks per category}} & {counts} & (100) \\\\", "\\midrule",
         "\\multicolumn{7}{l}{\\emph{Coding agents, closed models}} \\\\[1pt]",
@@ -272,9 +323,9 @@ def tab_categories(cats, rows, n_tasks, n_tasks_id, path, n_open=8):
         r = next(c for c in cats if c["csv_name"] == short(lane)); idc = id_only_categories(lane)
         idov = next(x for x in rows if x["csv_name"] == r["csv_name"])["ID"]
         out.append(f"{tex_name(r['name'])} & " + " & ".join(f"{idc[c]:.3f}" for c in CATS) + f" & {idov:.3f} \\\\")
-    out.append(f"{v['model']} (video model) & " + " & ".join(f"{v[c]:.3f}" for c in CATS) + " & " + next(f"{x['ID']:.3f}" for x in rows if x["csv_name"] == v["model"]) + " \\\\")
+    out.append(f"\\makecell[l]{{{v['model']}\\\\\\emph{{(video model)}}}} & " + " & ".join(f"{v[c]:.3f}" for c in CATS) + " & " + next(f"{x['ID']:.3f}" for x in rows if x["csv_name"] == v["model"]) + " \\\\")
     out += [
-"\\bottomrule", "\\end{tabular}", "\\end{table*}", ""]
+"\\bottomrule", "\\end{tabular}", "\\end{table}", ""]
     path.write_text("\n".join(out))
     return shown
 
@@ -340,11 +391,11 @@ def main():
     if a.check:
         return
     FIG_DIR.mkdir(exist_ok=True); TAB_DIR.mkdir(exist_ok=True)
-    h1 = fig_leaderboard(rows, FIG_DIR / "fig_leaderboard.pdf")
-    h2 = fig_ood(rows, FIG_DIR / "fig_ood.pdf")
+    fig_leaderboard(rows, FIG_DIR / "fig_leaderboard.pdf")
+    fig_ood(rows, FIG_DIR / "fig_ood.pdf")
     tab_main(rows, produced, TAB_DIR / "tab_main.tex")
     tab_categories(cats, rows, n_tasks, n_tasks_id, TAB_DIR / "tab_categories.tex")
-    print(f"wrote fig_leaderboard.pdf ({DOUBLE} x {h1:.2f} in), fig_ood.pdf ({SINGLE} x {h2:.2f} in), tab_main.tex, tab_categories.tex")
+    print(f"wrote fig_leaderboard.pdf (FULL {FULL} in), fig_ood.pdf (HALF {HALF} in), tab_main.tex, tab_categories.tex")
 
 
 if __name__ == "__main__":

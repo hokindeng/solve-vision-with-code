@@ -5,7 +5,9 @@ A coding agent is given the first frame and the prompt of a VBVR-Pro-Bench insta
 that renders the answer video; the video is scored by the benchmark's official rule-based evaluator, so
 its score sits on the same leaderboard as the video generation models. This repository holds the agent
 harness (`bench/`), the per-lane evaluator results and run statistics behind every number in the paper,
-and the paper source (`paper/`). Project page: https://hokindeng.com.
+the paper source (`paper/`), and the results site (`docs/`). Every agent video and program of the three
+closed-model lanes can be watched at https://hokindeng.github.io/solve-vision-with-code/.
+Project page: https://hokindeng.com.
 
 ## Results
 
@@ -47,6 +49,10 @@ Every coding agent above the noise floor, closed or open, scores higher Out-of-D
 training on any family; every video model trained on the In-Domain families scores lower Out-of-Domain, while
 the untrained video models move by less than 0.1.
 
+The site https://hokindeng.github.io/solve-vision-with-code/ shows the same leaderboard with the
+category and efficiency tables, the per-task heatmap, and every video and `solve.py` of the three
+closed-model lanes next to the ground truth.
+
 ## Layout
 
 ```
@@ -64,6 +70,9 @@ bench/
   agent/                    the agent image: python 3.11, ffmpeg, numpy, Pillow, OpenCV, imageio, scipy,
                             matplotlib, and the four agent CLIs at pinned versions; entrypoint.sh
 paper/                      the paper (ICML template); `paper/build.sh` builds main.pdf
+docs/                       the results site served by GitHub Pages: leaderboard, per-task gallery with every
+                            agent video and program; `docs/build_site.py` regenerates data/ and media/ from
+                            the run outputs
 ```
 
 ## Reproduce one lane
@@ -176,18 +185,24 @@ task id (T numbering follows the `generator-fixes` set of the source; G/O ids ar
 ## Data
 
 Everything the paper's numbers rest on is in the repository: `bench/results/<lane>/` (the evaluator's
-per-instance JSON for the 22 lanes that produced a video), `bench/stats.json`, `bench/paper/`. The agent
-videos of those 22 lanes and the per-instance agent workspaces (solve.py, event logs) of all 27 lanes are
-held privately (layout in `DATA_MANIFEST.md`); contact the corresponding author for access.
+per-instance JSON for the 22 lanes that produced a video), `bench/stats.json`, `bench/paper/`.
+
+The agent videos and `solve.py` programs of the three closed-model lanes (Codex × gpt-6-astra, Claude Code ×
+Fable 5.1, Gemini CLI × 3.1 Pro; 1,500 instances) are public on the site, next to the ground-truth videos:
+`docs/media/` and `docs/data/solve/`. The videos of the open-weight lanes and the full per-instance
+workspaces (event logs, container output) of all 27 lanes are held by the corresponding author; ask for
+access. The layout of everything, public or not, is in `DATA_MANIFEST.md`.
 
 ## Citation
 
 ```bibtex
 @article{deng2026solvevision,
   title   = {Solve Vision with Code: Coding Agents Are Stronger Visual Reasoners Than Video Models},
-  author  = {Deng, Hokin and others},
+  author  = {Deng, Hokin and Zhao, Zehong and Ji, Ran and Wang, Maijunxian and Gao, Qingying and
+             Yu, Fengyuan and Jiang, Zhengze and Zhang, Yilan},
   year    = {2026},
-  note    = {https://github.com/hokindeng/solve-vision-with-code}
+  url     = {https://hokindeng.github.io/solve-vision-with-code/},
+  note    = {Code and data: https://github.com/hokindeng/solve-vision-with-code}
 }
 ```
 
