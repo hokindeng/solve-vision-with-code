@@ -19,6 +19,8 @@ on a laptop; the bucket is the record. Object counts and sizes below are from a 
 | `paper/2026-09-16_tables/` | `bench/paper/` as generated for the paper (table1–4 CSV, tables.md, paper_tables.html) | 6 | 0.1 MB |
 | `harbor-runs/gpt-6-astra/<task>/` | the first Harbor-task agent runs (2026-09-11, 11 tasks, pre-`main_v2` G/O samples; not used in the paper) | 176 | 0.6 MB |
 | `archive/2026-09-11_svc-superseded-tasks-t134-t150/` | the 17 task directories replaced by the final T134–T150 set | 724 | 31 MB |
+| `archive/2026-09-17_pre-release-full-history-0b20525.bundle` | git bundle of the repository before the public release: full history incl. the 300 Harbor tasks with vendored generators, `harbor/` tooling, `rl/`, early runs (`git clone <bundle>`) | 1 | 169 MB |
+| `paper/2026-09-17_media-index.json`, `paper/2026-09-17_solve-vision-with-code-redesign.pdf` | catalogue of every video/frame/program the site was built from (absolute paths of the build machine; regenerate with the site builder's inputs), and the 2026-09-17 PDF | 2 | 4 MB |
 | `archive/2026-09-13_bench-evaluation-results-numpy2-env-superseded/` | the three closed-model lanes and the oracle/frozen runs as first scored in the non-conforming environment | 10 | 1.2 MB |
 | `pages/` | the display pages (run galleries 2026-09-11, bench pages 2026-09-12/13/16) | 41 | 1 MB |
 
