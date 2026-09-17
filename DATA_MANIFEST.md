@@ -11,20 +11,28 @@ on a laptop; the bucket is the record. Object counts and sizes below are from a 
 | `bench/outputs/<lane>.tgz` | the same layout, one tarball per open-weight lane that produced at least one video (19 lanes: deepseek-v3.2, devstral-2, glm-4.7-flash, glm-5, gpt-oss-120b, gpt-oss-20b, kimi-k2-thinking, kimi-k2.5, llama4-maverick, llama4-scout, minimax-m2.5, mistral-large-3, nemotron-nano-3, nemotron-super-3, qwen3-32b, qwen3-coder-30b, qwen3-coder-next, qwen3-next-80b, qwen3-vl-235b) | 19 | 543 MB |
 | `bench/runs/<lane>/<split>/<task>/<idx>/` | per-instance agent workspaces (`app/solve.py`, `app/events.jsonl`, `app/output/`, `summary.json`) for the three closed-model lanes | 25,055 | 415 MB |
 | `bench/runs/<lane>.tgz` | the same, one tarball per open-weight lane, all 24 roster cells (the 19 above plus the four that produced no video — gemma-3-27b, gemma-3-12b, magistral-small, llama3.3-70b — and the aborted deepseek-r1 attempt, 401 instances, no tool use) | 24 | 1.15 GB |
-| `bench/runs/claude-claude-fable-5-1/` | an aborted first Claude lane (9 objects, one instance); superseded by `claude-fable-5.1-bedrock` | 9 | 12 KB |
 | `bench/evaluation_results/<lane>/<lane>_vbvr_results.json` | **the official evaluator output per lane, kit-conforming environment (numpy<2, norfair, easyocr)** — 22 lanes with videos, plus `svcb-oracle/` and `svcb-frozen/` (ground-truth and frozen-first-frame sanity runs); the three closed lanes also carry `all_models_summary.json`. Identical to `bench/results/<lane>/` in the repository, which is where `report.py` reads them. | 29 | 5.9 MB |
-| `bench/results/` | **superseded** — the first Codex scoring (2026-09-12, numpy-2 environment; G-5/G-8/O-18/O-19 scored 0 for every video). Same bytes as the copy under `archive/2026-09-13_…`. Do not use. | 2 | 0.3 MB |
 | `bench/box-logs-2026-09-16.tgz` | the bench box's roster and scoring logs | 1 | 0.5 MB |
 | `official-data/VBVR-Pro-Bench-Video.tar.gz` | the official benchmark data as downloaded from HF (`Video-Reason/VBVR-Pro-Bench`) | 1 | 90 MB |
 | `paper/2026-09-16_tables/` | `bench/paper/` as generated for the paper (table1–4 CSV, tables.md, paper_tables.html) | 6 | 0.1 MB |
-| `archive/2026-09-11_harbor-runs-gpt-6-astra/gpt-6-astra/<task>/` | the first Harbor-task agent runs (2026-09-11, 11 tasks, pre-`main_v2` G/O samples; not used in the paper) | 176 | 0.6 MB |
-| `archive/2026-09-11_svc-superseded-tasks-t134-t150/` | the 17 task directories replaced by the final T134–T150 set | 724 | 31 MB |
-| `archive/2026-09-17_pre-release-full-history-0b20525.bundle` | git bundle of the repository before the public release: full history incl. the 300 Harbor tasks with vendored generators, `harbor/` tooling, `rl/`, early runs (`git clone <bundle>`) | 1 | 169 MB |
 | `paper/2026-09-17_media-index.json`, `paper/2026-09-17_solve-vision-with-code-redesign.pdf` | catalogue of every video/frame/program the site was built from (absolute paths of the build machine; regenerate with the site builder's inputs), and the 2026-09-17 PDF | 2 | 4 MB |
-| `archive/2026-09-13_bench-evaluation-results-numpy2-env-superseded/` | the three closed-model lanes and the oracle/frozen runs as first scored in the non-conforming environment | 10 | 1.2 MB |
-| `pages/` | the display pages (run galleries 2026-09-11, bench pages 2026-09-12/13/16) | 41 | 1 MB |
+| `pages/2026-09-16_svc-bench-final.html` | the final leaderboard display page (2026-09-16) | 1 | 10 KB |
 
-Total: about 27,600 objects, 2.3 GB.
+`archive/` holds everything superseded or aborted; nothing is deleted (the bucket is versioned).
+
+| Prefix | Content | Objects | Size |
+|---|---|---|---|
+| `archive/2026-09-17_pre-release-full-history-0b20525.bundle` | git bundle of the repository before the public release: full history incl. the 300 Harbor tasks with vendored generators, `harbor/` tooling, `rl/`, early runs (`git clone <bundle>`) | 1 | 169 MB |
+| `archive/2026-09-11_svc-superseded-tasks-t134-t150/` | the 17 task directories replaced by the final T134–T150 set | 724 | 31 MB |
+| `archive/2026-09-11_harbor-runs-gpt-6-astra/gpt-6-astra/<task>/` | the first Harbor-task agent runs (2026-09-11, 11 tasks, pre-`main_v2` G/O samples; not used in the paper) | 176 | 0.6 MB |
+| `archive/2026-09-11_pages-harbor-era/` | the 2026-09-11 run galleries (Harbor-era, pre-benchmark) with their media | 38 | 1 MB |
+| `archive/2026-09-12_claude-lane-aborted-first-attempt/` | an aborted first Claude lane (one instance); superseded by `claude-fable-5.1-bedrock` | 9 | 12 KB |
+| `archive/2026-09-13_bench-evaluation-results-numpy2-env-superseded/` | the three closed-model lanes and the oracle/frozen runs as first scored in the non-conforming environment | 12 | 1.5 MB |
+| `archive/2026-09-13_bench-evaluation-results-numpy2-env-superseded/first-codex-scoring-2026-09-12/` | **superseded** — the first Codex scoring in the numpy-2 environment (G-5/G-8/O-18/O-19 scored 0 for every video). Do not use. | 2 | 0.3 MB |
+| `archive/2026-09-13_pages-superseded-bench/` | the 2026-09-12 and 2026-09-13 bench pages, superseded by the 2026-09-16 final page | 2 | 20 KB |
+| `archive/2026-09-16_paper-draft-superseded/` | the 2026-09-16 PDF, superseded by `paper/2026-09-17_…redesign.pdf` | 1 | 0.4 MB |
+
+Total: 27,601 objects, 2.5 GB (listing 2026-09-17).
 
 Bench box: one c7i.4xlarge (us-east-1, CPU only) ran every lane 2026-09-12 → 09-16 and wrote into the
 same layout; a lane's videos, workspaces and evaluator JSON were copied here when it completed. The box is
