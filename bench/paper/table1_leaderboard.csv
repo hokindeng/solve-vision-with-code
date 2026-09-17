@@ -1,0 +1,38 @@
+model,kind,overall,in_domain,out_of_domain,produced
+Codex/gpt-6-astra,coding agent,0.9228340214922199,0.8785477777712619,0.967120265213178,500
+Claude Code/Fable 5.1,coding agent,0.8942984694780162,0.8304484867522912,0.9581484522037411,500
+Gemini CLI/3.1 Pro,coding agent,0.892962658855426,0.8262871915876808,0.9596381261231712,500
+VBVR-Pro-Wan2.2-I2V-A14B (RL-trained video model),video model,0.67,0.808,0.532,500
+GLM-5,coding agent (open weights),0.5719026320559439,0.47938984243162674,0.6644154216802611,500
+VBVR-Pro-Wan2.1-I2V-14B,video model,0.562,0.73,0.395,500
+Kimi K2.5,coding agent (open weights),0.5573167396526539,0.4543154363392507,0.6603180429660572,500
+VBVR-Wan2.2,video model,0.517,0.548,0.486,500
+Seedance 2.0,video model,0.499,0.451,0.547,500
+VBVR-Pro-Wan2.2-TI2V-5B,video model,0.47,0.641,0.3,500
+MiniMax M2.5,coding agent (open weights),0.4507280115355934,0.38615404521615004,0.5153019778550367,500
+VBVR-Pro-LTX2.3,video model,0.425,0.527,0.324,500
+Kling VIDEO 3.0,video model,0.392,0.356,0.427,500
+DeepSeek V3.2,coding agent (open weights),0.37787808823056906,0.30338628762519393,0.45236988883594415,500
+Devstral 2 123B,coding agent (open weights),0.3502324134526621,0.274780774244307,0.42568405266101716,500
+Kimi K2 Thinking,coding agent (open weights),0.31261468887547966,0.2182770065212306,0.40695237122972866,500
+Veo 3.1,video model,0.309,0.312,0.305,500
+gpt-oss-120b,coding agent (open weights),0.269979532640855,0.19574178888067786,0.34421727640103217,500
+Qwen3-Coder-Next,coding agent (open weights),0.26386263708262314,0.2180836598216,0.30964161434364634,500
+Nemotron Super 3 120B,coding agent (open weights),0.20026881115024145,0.13925381311945187,0.261283809181031,500
+Wan2.2-I2V-A14B,video model,0.182,0.157,0.207,500
+Qwen3-Coder-30B-A3B,coding agent (open weights),0.14268714094284174,0.09927155985820778,0.18610272202747574,500
+Mistral Large 3 675B,coding agent (open weights),0.12740080582304567,0.078581086469421,0.17622052517667033,500
+LTX-2.3-I2AV,video model,0.112,0.106,0.119,500
+GLM-4.7-Flash,coding agent (open weights),0.10393438722775551,0.0811002046021337,0.1267685698533773,500
+Wan2.1-I2V-14B-720P,video model,0.1,0.105,0.095,500
+gpt-oss-20b,coding agent (open weights),0.07874994355361471,0.07453094239491015,0.08296894471231928,500
+Qwen3-Next-80B-A3B,coding agent (open weights),0.06975075254444844,0.034115155660149325,0.10538634942874756,500
+Llama 4 Scout,coding agent (open weights),0.04930328944812509,0.04032503410470565,0.05828154479154454,500
+Nemotron Nano 3 30B,coding agent (open weights),0.027756254109460185,0.026128416123987034,0.029384092094933333,500
+Qwen3-VL-235B-A22B,coding agent (open weights),0.024693009399915155,0.02167044994634091,0.0277155688534894,500
+Qwen3-32B,coding agent (open weights),0.004418163932493774,0.005852054141926439,0.0029842737230611088,500
+Llama 4 Maverick,coding agent (open weights),0.0010588313091234726,0.0005176626182469451,0.0016,500
+"OpenCode × Gemma 3 27B (open weights, Bedrock)",coding agent (open weights),0.0,0.0,0.0,0
+"OpenCode × Gemma 3 12B (open weights, Bedrock)",coding agent (open weights),0.0,0.0,0.0,0
+"OpenCode × Magistral Small (open weights, Bedrock)",coding agent (open weights),0.0,0.0,0.0,0
+"OpenCode × Llama 3.3 70B (open weights, Bedrock via converse proxy)",coding agent (open weights),0.0,0.0,0.0,0

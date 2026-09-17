@@ -1,0 +1,32 @@
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\caption{Reward validation on all 100 evaluator families (fresh seed 4242, one instance per family, 2026-09-13). For each family the generator's own ground-truth video and a frozen copy of the first frame are scored by the official evaluator in the conforming environment. A family is \emph{discriminating} when ground truth scores $\geq 0.95$ and the frozen frame $\leq 0.5$. The two lists are disjoint. Families marked $\dagger$ are among the 50 in-domain families used for training.}
+\label{tab:rewardcheck}
+\begin{tabular}{lr}
+\toprule
+Check & Families \\
+\midrule
+Ground truth $\geq 0.95$ and frozen frame $\leq 0.5$ & 90 / 100 \\
+Ground truth $< 0.95$ on a fresh seed & 6 \\
+Frozen frame $> 0.5$ & 4 \\
+Frozen-frame score, median / mean & 0.00 / 0.11 \\
+Evaluator time per (truth, frozen) pair & 5.3\,s \\
+\midrule
+\multicolumn{2}{l}{\textit{Ground truth $< 0.95$ (family: score of its own ground truth)}} \\
+\quad G-47 & 0.00 \\
+\quad O-27 & 0.45 \\
+\quad O-24$^\dagger$ & 0.72 \\
+\quad O-53$^\dagger$ & 0.75 \\
+\quad G-167 & 0.87 \\
+\quad O-46 & 0.90 \\
+\midrule
+\multicolumn{2}{l}{\textit{Frozen frame $> 0.5$ (family: score of the frozen first frame)}} \\
+\quad O-58 & 1.00 \\
+\quad O-39 & 0.64 \\
+\quad O-54 & 0.59 \\
+\quad O-15$^\dagger$ & 0.58 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,24 @@
+% Generated from bench/paper/table3_efficiency.csv (agents' own event logs; 500 instances per lane).
+\begin{table*}[t]
+\centering
+\caption{Cost of a solution. Per-instance means over the 500 instances (median for wall-clock seconds), from each agent's own event log. Tool-use rate is the fraction of instances with at least one tool call; tokens are input/output per instance in thousands; timeouts are instances killed at the 1800\,s wall clock. The three closed agents and the six best open-weight lanes are shown; every lane that produced a video appears in \cref{fig:tools}.}
+\label{tab:efficiency}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Agent & Score & Videos & Tool use & Calls & Median s & In (k) & Out (k) & Timeouts \\
+\midrule
+\textbf{Codex (gpt-6-astra)} & \textbf{0.923} & \textbf{500} & \textbf{1.00} & \textbf{3.2} & \textbf{22} & \textbf{57} & \textbf{1.2} & \textbf{0} \\
+Claude Code (Fable 5.1) & 0.894 & 500 & 1.00 & 9.2 & 105 & 233 & 7.3 & 0 \\
+Gemini CLI (Gemini 3.1 Pro) & 0.893 & 500 & 1.00 & 25.3 & 218 & 659 & 7.5 & 0 \\
+\midrule
+GLM-5 & 0.572 & 495 & 1.00 & 48.0 & 378 & 1569 & 16.3 & 12 \\
+Kimi K2.5 & 0.557 & 498 & 0.99 & 41.9 & 336 & 1213 & 19.2 & 0 \\
+MiniMax M2.5 & 0.451 & 488 & 0.99 & 45.7 & 420 & 1295 & 19.8 & 0 \\
+DeepSeek V3.2 & 0.378 & 475 & 1.00 & 32.9 & 277 & 636 & 13.6 & 0 \\
+Devstral 2 123B & 0.350 & 494 & 0.99 & 38.7 & 344 & 839 & 13.1 & 0 \\
+Kimi K2 Thinking & 0.313 & 406 & 0.96 & 21.8 & 125 & 509 & 15.5 & 1 \\
+\bottomrule
+\end{tabular}
+\end{table*}

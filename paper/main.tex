@@ -1,0 +1,234 @@
+%%%%%%%% ICML 2026 LATEX FILE — Solve Vision with Code %%%%%%%%%%%%%%%%%
+% Adapted from the object-permanence paper template; preamble kept, content replaced.
+% Build: bash build.sh   (pdflatex → bibtex → pdflatex → pdflatex)
+
+\documentclass{article}
+\usepackage{hyphenat}
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\graphicspath{{figures/}{figures/qualitative/}{sec/}} % figures/*.pdf, qualitative/*, legacy sec/* all resolve
+\usepackage{subcaption}
+\usepackage{booktabs} % for professional tables
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{caption}
+
+% TIGHT UP SPACE
+ %%%%%%%%%%%%%
+% \setlength{\parskip}{0pt}
+% \setlength{\parindent}{1em}  % keep a
+% \usepackage{titlesec}
+% \titlespacing*{\paragraph}{0pt}{0.3ex plus 0.1ex minus 0.1ex}{0.6em} %normal indent (optional)
+% \makeatletter
+% \renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+%  {0.35ex \@plus 0.1ex \@minus 0.1ex}% space above
+ % {-0.8em}% space after (negative = run-in)
+ % {\normalfont\normalsize\bfseries}}
+% \makeatother
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2026} with \usepackage[nohyperref]{icml2026} above.
+\usepackage{hyperref}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% Attempt to make hyperref and algorithmic work together better:
+\usepackage{wrapfig}\usepackage[table]{xcolor} % [table] already loads colortbl
+\definecolor{bestcolor}{RGB}{219, 208, 237}
+\definecolor{secondcolor}{RGB}{241, 237, 248}
+\definecolor{line-blue}{RGB}{243, 248, 252}
+\definecolor{taskSpatial}{RGB}{255, 204, 170}   % Peach
+\definecolor{taskTransform}{RGB}{210, 190, 230} % Lavender
+\definecolor{taskLogic}{RGB}{160, 200, 255}     % Sky Blue
+\definecolor{taskAbstract}{RGB}{245, 170, 185}  % Rose Pink
+\definecolor{taskPercept}{RGB}{180, 225, 200}   % Soft Mint
+\definecolor{taskPhysics}{RGB}{30, 60, 120}
+
+\definecolor{resourceblue}{HTML}{4C7DBF}
+\newcommand{\pending}[1]{\textcolor{red}{[#1]}}
+\newcommand{\resource}[2]{\href{#2}{\textcolor{resourceblue}{[\textbf{#1}]}}}
+
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Macros
+\usepackage{xspace}
+
+
+
+% Use the following line for the initial blind version submitted for review:
+% \usepackage{icml2026}
+
+% For preprint, use
+% \usepackage[preprint]{icml2026}
+
+% THIS IS FOR PUBLIC RELATIONS
+\usepackage[pr]{icml2026}
+
+\makeatletter
+% Header brand mark: icml2026.sty [pr] hard-codes the object-permanence site; point it at this repo.
+\renewcommand{\pr@headerlogo}{%
+  {\pr@logofont\textcolor{pr@accent}{%
+    \href{https://github.com/hokindeng/solve-vision-with-code}{github.com/hokindeng/solve-vision-with-code}}}%
+}
+\gdef\affil@sep{\enspace}
+\newcommand{\affilbreak}{\gdef\affil@sep{\\[2pt]}}
+
+\renewcommand{\printAffiliationsAndNotice}[1]{\global\icml@noticeprintedtrue%
+  \stepcounter{@affiliationcounter}%
+  \noindent\begin{minipage}{\textwidth}%
+    \centering
+    \fontsize{9}{11}\selectfont%
+    \forloop{@affilnum}{1}{\value{@affilnum} < \value{@affiliationcounter}}{%
+      \textsuperscript{\arabic{@affilnum}}\,\csname @affilname\the@affilnum\endcsname%
+      \affil@sep\gdef\affil@sep{\enspace}%
+    }%
+    \ificmlshowauthors #1\fi%
+    \ifdefined\icmlcorrespondingauthor@text
+      \\[4pt]%
+      \textsuperscript{\textdagger}\,Correspondence to: \icmlcorrespondingauthor@text.%
+    \fi%
+    \\[6pt]% resource links start here
+    \resource{Code}{https://github.com/hokindeng/solve-vision-with-code}\enspace
+    \resource{Website}{https://video-reason.com}%
+  \end{minipage}%
+  \vskip 8pt%
+  {\centering\textcolor{pr@lightgray}{\rule{0.2\textwidth}{0.3pt}}\par}%
+}
+\makeatother
+
+% If accepted, instead use the following line for the camera-ready submission:
+% \usepackage[accepted]{icml2026}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+% xcolor already loaded above with [table] option
+
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref} % LAST
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+\usepackage[disable,textsize=tiny]{todonotes}
+%\usepackage[textsize=tiny]{todonotes}
+\usepackage{enumitem}
+
+\usepackage{makecell}
+\usepackage{verbatim}   % \verbatiminput of solve.py listings in the appendix / analysis
+
+% Float placement: the single-column [pr] layout otherwise defers most tables/figures to after the
+% conclusion. Let a page be mostly float and allow more floats per page.
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.8}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
+
+% Short form of the title for the running header:
+\icmltitlerunning{Solve Vision with Code}
+
+\begin{document}
+\twocolumn[
+  \icmltitle{Solve Vision with Code: Coding Agents Are Stronger Visual Reasoners Than Video Models}
+
+  % It is OKAY to include author information, even for blind submissions: the
+  % style file will automatically remove it for you unless you've provided
+  % the [accepted] option to the icml2026 package.
+
+  % List of affiliations: The first argument should be a (short) identifier you
+  % will use later to specify author affiliations Academic affiliations
+  % should list Department, University, City, Region, Country Industry
+  % affiliations should list Company, City, Region, Country
+
+  % You can specify symbols, otherwise they are numbered in order. Ideally, you
+  % should not use this facility. Affiliations will be numbered in order of
+  % appearance and this is the preferred way.
+  % \icmlsetsymbol{equal}{*}
+
+
+\begin{icmlauthorlist}
+    \icmlauthor{Hokin Deng}{cmu}
+    \icmlauthor{Zehong Zhao}{ucsd}
+    \icmlauthor{Ran Ji}{ucsd}
+    \icmlauthor{Maijunxian Wang}{ucb}
+    \icmlauthor{Qingying Gao}{jhu}
+    \icmlauthor{Fengyuan Yu}{cmu}
+    \icmlauthor{Zhengze Jiang}{columbia}
+    \icmlauthor{Yilan Zhang}{ucla}
+\end{icmlauthorlist}
+
+\icmlaffiliation{cmu}{Carnegie Mellon University}
+\icmlaffiliation{ucsd}{University of California, San Diego}
+\icmlaffiliation{ucb}{University of California, Berkeley}
+\icmlaffiliation{jhu}{Johns Hopkins University}
+\icmlaffiliation{columbia}{Columbia University}
+\icmlaffiliation{ucla}{University of California, Los Angeles}
+
+\icmlcorrespondingauthor{Hokin Deng}{hokind@andrew.cmu.edu}
+\printAffiliationsAndNotice{}
+% \printAffiliationsAndNotice{\icmlEqualContribution}
+
+\icmlkeywords{Visual Reasoning, Coding Agents, Video Models, Program Synthesis}
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column listing the
+% affiliations and the copyright notice. The command takes one argument, which
+% is text to display at the start of the footnote. The \icmlEqualContribution
+% command is standard text for equal contribution. Remove it (just {}) if you
+% do not need this facility.
+
+% Use ONE of the following lines. DO NOT remove the command.
+% If you have no special notice, KEEP empty braces:
+% \printAffiliationsAndNotice{}  % no special notice (required even if empty)
+% Or, if applicable, use the standard equal contribution text:
+
+% Each section is pulled in only if its file exists; a missing one leaves a red note
+% instead of breaking the build (the section files are written by separate owners).
+\newcommand{\inputsection}[2]{\IfFileExists{#1.tex}{\input{#1}}{\section*{\pending{section #2 missing: \texttt{\detokenize{#1.tex}}}}}}
+
+\inputsection{sec/0_abstract}{0 (abstract)}
+\inputsection{sec/1_introduction}{1 (introduction)}
+\inputsection{sec/2_related_works}{2 (related work)}
+\inputsection{sec/3_method}{3 (method)}
+\inputsection{sec/4_results}{4 (results)}
+\inputsection{sec/5_analysis}{5 (analysis)}
+\inputsection{sec/6_conclusion}{6 (conclusion)}
+
+\clearpage
+
+% In the unusual situation where you want a paper to appear in the
+% references without citing it in the main text, use \nocite
+% \nocite{langley00}
+
+\IfFileExists{main.bib}{%
+  \bibliography{main}
+  \bibliographystyle{icml2026}
+}{\section*{\pending{main.bib missing: references not built}}}
+
+\clearpage
+\appendix
+\inputsection{sec/appendix}{A (appendix)}
+
+\end{document}

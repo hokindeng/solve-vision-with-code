@@ -1,0 +1,294 @@
+% Every key cited in paper/sec/*.tex (\citep/\citet) has an entry here.
+% Entries with a "% TODO verify" line were written from memory and still need a check against the source.
+
+% ---------------------------------------------------------------- the benchmark
+
+@misc{vbvrpro2026,
+  title         = {{VBVR-Pro}: A Scalable and Verifiable Suite for Native Visual Reasoning},
+  author        = {Junxiang Xu and Ruisi Wang and Fanyi Pu and Maijunxian Wang and Ran Ji and Tongxi Zhou and Chenyang Gu and Jing Zuo and Hongcan Xiao and Yimeng Geng and Wanqi Yin and Wei Chen and Oscar Qian and Zhengan Yan and Ziqi Huang and Haiwen Diao and Liang Pan and Bo Li and Xiangyu Fan and Dezhi Luo and Fengyuan Yu and Zehong Zhao and Qingying Gao and Tinghui Zhu and Yilan Zhang and Jingqi Tong and Pinyuan Feng and Zhengze Jiang and Letian Wang and Ziyu Guo and Renrui Zhang and Jieneng Chen and Sonia Joseph and Constantin Venhoff and Saman Motamed and Mengyue Yang and Chandra Sripada and Alan Yuille and Philip Torr and Lvmin Zhang and Vikash Kumar and Daniel Khashabi and Nikolaus Kriegeskorte and Rapha\"{e}l Milli\`{e}re and Vincent C. M\"{u}ller and Anyi Rao and Quan Wang and Ziwei Liu and Dahua Lin and Lei Yang and Hokin Deng and Zhongang Cai},
+  year          = {2026},
+  eprint        = {2608.26105},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2608.26105}
+}
+
+
+% ---------------------------------------------------------------- video generation models
+
+@misc{openai2024sora,
+  title        = {Video Generation Models as World Simulators},
+  author       = {{OpenAI}},
+  year         = {2024},
+  howpublished = {Technical report},
+  url          = {https://openai.com/research/video-generation-models-as-world-simulators}
+}
+
+@misc{deepmind2025veo3,
+  title        = {Veo 3},
+  author       = {{Google DeepMind}},
+  year         = {2025},
+  howpublished = {Model card and technical documentation},
+  url          = {https://deepmind.google/models/veo/}
+% TODO verify: Veo 3.1 is the version on the VBVR-Pro leaderboard. [verify: pin the Veo 3.1 model card]
+}
+
+@misc{wan2025wan,
+  title         = {Wan: Open and Advanced Large-Scale Video Generative Models},
+  author        = {{Wan Team}},
+  year          = {2025},
+  eprint        = {2503.20314},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
+% TODO verify: [verify author list]
+}
+
+@misc{wan2025wan22,
+  title        = {{Wan2.2}: Open and Advanced Large-Scale Video Generative Models},
+  author       = {{Wan Team}},
+  year         = {2025},
+  howpublished = {Model release},
+  url          = {https://github.com/Wan-Video/Wan2.2}
+% TODO verify: [verify: cite the Wan2.2 technical report if one is published]
+}
+
+@misc{kuaishou2025kling,
+  title        = {Kling},
+  author       = {{Kuaishou Technology}},
+  year         = {2025},
+  howpublished = {Video generation model},
+  url          = {https://klingai.com}
+% TODO verify: Kling 3.0 is the version on the VBVR-Pro leaderboard. [verify: pin the Kling 3.0 reference]
+}
+
+@misc{seedance2025,
+  title         = {Seedance 1.0: Exploring the Boundaries of Video Generation Models},
+  author        = {{ByteDance Seed}},
+  year          = {2025},
+  eprint        = {2506.09113},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
+% TODO verify: Seedance 2.0 is the version on the VBVR-Pro leaderboard. [verify: replace with the Seedance 2.0 report if one exists]
+}
+
+@misc{lightricks2026ltx2,
+  title        = {{LTX-2}},
+  author       = {{Lightricks}},
+  year         = {2026},
+  howpublished = {Model release},
+  url          = {https://github.com/Lightricks/LTX-2}
+% TODO verify: LTX-2.3 is the version on the VBVR-Pro leaderboard. [verify: cite the LTX-2 technical report]
+}
+
+% ---------------------------------------------------------------- video-model evaluation and reasoning
+
+@inproceedings{huang2024vbench,
+  title     = {{VBench}: Comprehensive Benchmark Suite for Video Generative Models},
+  author    = {Ziqi Huang and Yinan He and Jiashuo Yu and Fan Zhang and Chenyang Si and Yuming Jiang and Yuanhan Zhang and Tianxing Wu and Qingyang Jin and Nattapol Chanpaisit and Yaohui Wang and Xinyuan Chen and Limin Wang and Dahua Lin and Yu Qiao and Ziwei Liu},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2024}
+}
+
+@inproceedings{he2024videoscore,
+  title     = {{VideoScore}: Building Automatic Metrics to Simulate Fine-grained Human Feedback for Video Generation},
+  author    = {Xuan He and Dongfu Jiang and Ge Zhang and Max Ku and Achint Soni and Sherman Siu and Haonan Chen and Abhranil Chandra and Ziyan Jiang and Aaran Arulraj and Kai Wang and Quy Duc Do and Yuansheng Ni and Bohan Lyu and Yaswanth Narsupalli and Rongqi Fan and Zhiheng Lyu and Yuchen Lin and Wenhu Chen},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing (EMNLP)},
+  year      = {2024}
+}
+
+@misc{motamed2025physicsiq,
+  title         = {Do Generative Video Models Understand Physical Principles?},
+  author        = {Saman Motamed and Laura Culp and Kevin Swersky and Priyank Jaini and Robert Geirhos},
+  year          = {2025},
+  eprint        = {2501.09038},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
+}
+
+@misc{wiedemer2025videomodels,
+  title         = {Video Models are Zero-shot Learners and Reasoners},
+  author        = {Thadd\"{a}us Wiedemer and Yuxuan Li and Paul Vicol and Shixiang Shane Gu and Nick Matarese and Kevin Swersky and Been Kim and Priyank Jaini and Robert Geirhos},
+  year          = {2025},
+  eprint        = {2509.20328},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG}
+}
+
+@misc{tong2025thinkingwithvideo,
+  title         = {Thinking with Video: Video Generation as a Promising Multimodal Reasoning Paradigm},
+  author        = {Jingqi Tong and Yurong Mou and Hangcheng Li and Mingzhe Li and Yongzhuo Yang and Ming Zhang and Qiguang Chen and Tianyi Liang and Xiaomeng Hu and Yining Zheng and Xinchi Chen and Jun Zhao and Xuanjing Huang and Xipeng Qiu},
+  year          = {2025},
+  eprint        = {2511.04570},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
+% TODO verify: [verify author list]
+}
+
+@inproceedings{zheng2023judging,
+  title     = {Judging {LLM}-as-a-Judge with {MT-Bench} and {Chatbot Arena}},
+  author    = {Lianmin Zheng and Wei-Lin Chiang and Ying Sheng and Siyuan Zhuang and Zhanghao Wu and Yonghao Zhuang and Zi Lin and Zhuohan Li and Dacheng Li and Eric P. Xing and Hao Zhang and Joseph E. Gonzalez and Ion Stoica},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track},
+  year      = {2023}
+}
+
+% ---------------------------------------------------------------- program-aided and visual programming
+
+@inproceedings{gao2023pal,
+  title     = {{PAL}: Program-aided Language Models},
+  author    = {Luyu Gao and Aman Madaan and Shuyan Zhou and Uri Alon and Pengfei Liu and Yiming Yang and Jamie Callan and Graham Neubig},
+  booktitle = {Proceedings of the 40th International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {202},
+  pages     = {10764--10799},
+  year      = {2023}
+}
+
+@article{chen2023pot,
+  title   = {Program of Thoughts Prompting: Disentangling Computation from Reasoning for Numerical Reasoning Tasks},
+  author  = {Wenhu Chen and Xueguang Ma and Xinyi Wang and William W. Cohen},
+  journal = {Transactions on Machine Learning Research (TMLR)},
+  year    = {2023}
+}
+
+@inproceedings{suris2023vipergpt,
+  title     = {{ViperGPT}: Visual Inference via {Python} Execution for Reasoning},
+  author    = {D\'{i}dac Sur\'{i}s and Sachit Menon and Carl Vondrick},
+  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+  pages     = {11888--11898},
+  year      = {2023}
+}
+
+@inproceedings{gupta2023visprog,
+  title     = {Visual Programming: Compositional Visual Reasoning Without Training},
+  author    = {Tanmay Gupta and Aniruddha Kembhavi},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {14953--14962},
+  year      = {2023}
+}
+
+@inproceedings{hu2024sketchpad,
+  title     = {Visual Sketchpad: Sketching as a Visual Chain of Thought for Multimodal Language Models},
+  author    = {Yushi Hu and Weijia Shi and Xingyu Fu and Dan Roth and Mari Ostendorf and Luke Zettlemoyer and Noah A. Smith and Ranjay Krishna},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2024}
+}
+
+@inproceedings{liang2023codeaspolicies,
+  title     = {Code as Policies: Language Model Programs for Embodied Control},
+  author    = {Jacky Liang and Wenlong Huang and Fei Xia and Peng Xu and Karol Hausman and Brian Ichter and Pete Florence and Andy Zeng},
+  booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
+  year      = {2023}
+}
+
+% ---------------------------------------------------------------- code models and coding agents
+
+@misc{chen2021codex,
+  title         = {Evaluating Large Language Models Trained on Code},
+  author        = {Mark Chen and Jerry Tworek and Heewoo Jun and Qiming Yuan and Henrique Ponde de Oliveira Pinto and Jared Kaplan and Harri Edwards and Yuri Burda and Nicholas Joseph and Greg Brockman and Alex Ray and Raul Puri and Gretchen Krueger and Michael Petrov and Heidy Khlaaf and Girish Sastry and Pamela Mishkin and Brooke Chan and Scott Gray and Nick Ryder and Mikhail Pavlov and Alethea Power and Lukasz Kaiser and Mohammad Bavarian and Clemens Winter and Philippe Tillet and Felipe Petroski Such and Dave Cummings and Matthias Plappert and Fotios Chantzis and Elizabeth Barnes and Ariel Herbert-Voss and William Hebgen Guss and Alex Nichol and Alex Paino and Nikolas Tezak and Jie Tang and Igor Babuschkin and Suchir Balaji and Shantanu Jain and William Saunders and Christopher Hesse and Andrew N. Carr and Jan Leike and Josh Achiam and Vedant Misra and Evan Morikawa and Alec Radford and Matthew Knight and Miles Brundage and Mira Murati and Katie Mayer and Peter Welinder and Bob McGrew and Dario Amodei and Sam McCandlish and Ilya Sutskever and Wojciech Zaremba},
+  year          = {2021},
+  eprint        = {2107.03374},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG}
+}
+
+@inproceedings{jimenez2024swebench,
+  title     = {{SWE-bench}: Can Language Models Resolve Real-World {GitHub} Issues?},
+  author    = {Carlos E. Jimenez and John Yang and Alexander Wettig and Shunyu Yao and Kexin Pei and Ofir Press and Karthik Narasimhan},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024}
+}
+
+@inproceedings{yang2024sweagent,
+  title     = {{SWE-agent}: Agent-Computer Interfaces Enable Automated Software Engineering},
+  author    = {John Yang and Carlos E. Jimenez and Alexander Wettig and Kilian Lieret and Shunyu Yao and Karthik Narasimhan and Ofir Press},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2024}
+}
+
+@misc{codexcli,
+  title        = {Codex {CLI}},
+  author       = {{OpenAI}},
+  year         = {2026},
+  howpublished = {Software, version 0.154.0},
+  url          = {https://github.com/openai/codex}
+}
+
+@misc{claudecode,
+  title        = {Claude Code},
+  author       = {{Anthropic}},
+  year         = {2026},
+  howpublished = {Software, version 2.1.268},
+  url          = {https://github.com/anthropics/claude-code}
+}
+
+@misc{geminicli,
+  title        = {Gemini {CLI}},
+  author       = {{Google}},
+  year         = {2026},
+  howpublished = {Software, version 0.59.0},
+  url          = {https://github.com/google-gemini/gemini-cli}
+}
+
+@misc{opencode,
+  title        = {{OpenCode}},
+  author       = {{OpenCode contributors}},
+  year         = {2026},
+  howpublished = {Software, version 1.18.30},
+  url          = {https://github.com/sst/opencode}
+% TODO verify: [verify: canonical repository URL]
+}
+
+@misc{harbor2025,
+  title        = {Harbor: A Framework for Packaging and Running Agent Tasks},
+  author       = {{Laude Institute}},
+  year         = {2025},
+  howpublished = {Software},
+  url          = {https://github.com/laude-institute/harbor}
+% TODO verify: [verify: cite the Terminal-Bench 2.0 report if it is the canonical reference]
+}
+
+% ---------------------------------------------------------------- reinforcement learning
+
+@misc{shao2024deepseekmath,
+  title         = {{DeepSeekMath}: Pushing the Limits of Mathematical Reasoning in Open Language Models},
+  author        = {Zhihong Shao and Peiyi Wang and Qihao Zhu and Runxin Xu and Junxiao Song and Xiao Bi and Haowei Zhang and Mingchuan Zhang and Y. K. Li and Y. Wu and Daya Guo},
+  year          = {2024},
+  eprint        = {2402.03300},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL}
+}
+
+@misc{guo2025deepseekr1,
+  title         = {{DeepSeek-R1}: Incentivizing Reasoning Capability in {LLMs} via Reinforcement Learning},
+  author        = {{DeepSeek-AI}},
+  year          = {2025},
+  eprint        = {2501.12948},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL}
+}
+
+@misc{liu2025flowgrpo,
+  title         = {{Flow-GRPO}: Training Flow Matching Models via Online {RL}},
+  author        = {Jie Liu and Gongye Liu and Jiajun Liang and Yangguang Li and Jiaheng Liu and Xintao Wang and Pengfei Wan and Di Zhang and Wanli Ouyang},
+  year          = {2025},
+  eprint        = {2505.05470},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
+}
+
+@misc{xue2025dancegrpo,
+  title         = {{DanceGRPO}: Unleashing {GRPO} on Visual Generation},
+  author        = {Zeyue Xue and Jie Wu and Yu Gao and Fangyuan Kong and Lingting Zhu and Mengzhao Chen and Zhiheng Liu and Wei Liu and Qiushan Guo and Weilin Huang and Ping Luo},
+  year          = {2025},
+  eprint        = {2505.07818},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
+}
+
+@misc{vonwerra2020trl,
+  title        = {{TRL}: Transformer Reinforcement Learning},
+  author       = {Leandro von Werra and Younes Belkada and Lewis Tunstall and Edward Beeching and Tristan Thrush and Nathan Lambert and Shengyi Huang and Kashif Rasul and Quentin Gallou\'{e}dec},
+  year         = {2020},
+  howpublished = {Software},
+  url          = {https://github.com/huggingface/trl}
+}

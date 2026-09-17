@@ -1,0 +1,38 @@
+{
+  "claude-fable-5.1-bedrock": {
+    "In_Domain": 0.8304484867522912,
+    "Out_of_Domain": 0.9581484522037411,
+    "overall": 0.8942984694780162,
+    "by_category": {
+      "Abstraction": 0.8377223848010434,
+      "Perception": 0.956746597261008,
+      "Spatiality": 0.9079344156338991,
+      "Transformation": 0.9431603899364046,
+      "Knowledge": 0.8343688039520032
+    }
+  },
+  "codex-gpt-6-astra": {
+    "In_Domain": 0.8785477777712619,
+    "Out_of_Domain": 0.967120265213178,
+    "overall": 0.9228340214922199,
+    "by_category": {
+      "Abstraction": 0.9572928561791345,
+      "Perception": 0.9529136170071569,
+      "Spatiality": 0.903401632831021,
+      "Transformation": 0.9016378592743506,
+      "Knowledge": 0.8629167911555102
+    }
+  },
+  "gemini-gemini-3.1-pro-preview": {
+    "In_Domain": 0.8262871915876808,
+    "Out_of_Domain": 0.9596381261231712,
+    "overall": 0.892962658855426,
+    "by_category": {
+      "Abstraction": 0.8775355519040935,
+      "Perception": 0.9716197654572784,
+      "Spatiality": 0.8160657072117339,
+      "Transformation": 0.8943492606695239,
+      "Knowledge": 0.8612253269323392
+    }
+  }
+}

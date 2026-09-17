@@ -1,0 +1,126 @@
+{
+ "_doc": "Open-weight models served by Amazon Bedrock, run through OpenCode via Bedrock's OpenAI-compatible endpoint. Ids as `aws bedrock list-foundation-models` prints them (us-east-1). Roster assembled 2026-09-12. route=bedrock: Bedrock's OpenAI-compatible endpoint. route=bedrock-proxy: bench/bedrock_proxy.py on the host (non-streaming Converse behind an OpenAI-compatible shim) for models that endpoint 404s and whose streaming Converse rejects tool use (deepseek-r1, llama). route=unsupported: skipped by run_roster.sh.",
+ "cells": {
+  "bedrock-gpt-oss-120b": {
+   "model": "openai.gpt-oss-120b-1:0",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-gpt-oss-20b": {
+   "model": "openai.gpt-oss-20b-1:0",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-deepseek-v3.2": {
+   "model": "deepseek.v3.2",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-deepseek-r1": {
+   "model": "us.deepseek.r1-v1:0",
+   "route": "unsupported",
+   "weights": "open",
+   "note": "Bedrock Converse: 'This model doesn't support tool use' (streaming and non-streaming, 2026-09-14); cannot act as a coding agent."
+  },
+  "bedrock-minimax-m2.5": {
+   "model": "minimax.minimax-m2.5",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-kimi-k2.5": {
+   "model": "moonshotai.kimi-k2.5",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-kimi-k2-thinking": {
+   "model": "moonshot.kimi-k2-thinking",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-qwen3-coder-next": {
+   "model": "qwen.qwen3-coder-next",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-qwen3-next-80b": {
+   "model": "qwen.qwen3-next-80b-a3b",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-qwen3-coder-30b": {
+   "model": "qwen.qwen3-coder-30b-a3b-v1:0",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-qwen3-32b": {
+   "model": "qwen.qwen3-32b-v1:0",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-glm-5": {
+   "model": "zai.glm-5",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-glm-4.7-flash": {
+   "model": "zai.glm-4.7-flash",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-nemotron-super-3": {
+   "model": "nvidia.nemotron-super-3-120b",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-nemotron-nano-3": {
+   "model": "nvidia.nemotron-nano-3-30b",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-devstral-2": {
+   "model": "mistral.devstral-2-123b",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-mistral-large-3": {
+   "model": "mistral.mistral-large-3-675b-instruct",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-magistral-small": {
+   "model": "mistral.magistral-small-2509",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-llama4-maverick": {
+   "model": "us.meta.llama4-maverick-17b-instruct-v1:0",
+   "route": "bedrock-proxy",
+   "weights": "open"
+  },
+  "bedrock-llama4-scout": {
+   "model": "us.meta.llama4-scout-17b-instruct-v1:0",
+   "route": "bedrock-proxy",
+   "weights": "open"
+  },
+  "bedrock-llama3.3-70b": {
+   "model": "us.meta.llama3-3-70b-instruct-v1:0",
+   "route": "bedrock-proxy",
+   "weights": "open"
+  },
+  "bedrock-gemma-3-27b": {
+   "model": "google.gemma-3-27b-it",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-gemma-3-12b": {
+   "model": "google.gemma-3-12b-it",
+   "route": "bedrock",
+   "weights": "open"
+  },
+  "bedrock-qwen3-vl-235b": {
+   "model": "qwen.qwen3-vl-235b-a22b",
+   "route": "bedrock",
+   "weights": "open"
+  }
+ }
+}

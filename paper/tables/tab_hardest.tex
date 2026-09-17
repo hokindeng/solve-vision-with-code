@@ -1,0 +1,26 @@
+% Generated from bench/paper/table4_per_task_closed.csv (per-task mean over 5 instances; category from the evaluator results).
+\begin{table*}[t]
+\centering
+\caption{The twelve hardest tasks for the closed agents: lowest mean of the three per-task scores (each a mean over 5 instances). Split is in-domain (ID) or out-of-domain (OOD); category is the benchmark's. \cref{sec:where-fail} groups them by cause.}
+\label{tab:hardest}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{llllrrrr}
+\toprule
+Task & Name & Split & Category & Codex & Claude & Gemini & Mean \\
+\midrule
+G-43 & understand scene structure & ID & Knowledge & 0.21 & 0.00 & \textbf{0.77} & 0.33 \\
+O-14 & shape scale then outline & ID & Abstraction & \textbf{0.78} & 0.01 & 0.58 & 0.45 \\
+G-29 & chart extreme with data & ID & Knowledge & \textbf{0.59} & 0.57 & 0.32 & 0.49 \\
+O-13 & shape outline then move & ID & Abstraction & \textbf{0.94} & 0.01 & 0.59 & 0.51 \\
+O-29 & ballcolor & ID & Abstraction & \textbf{0.73} & 0.41 & 0.49 & 0.54 \\
+O-32 & rolling ball & ID & Transformation & 0.32 & \textbf{0.70} & 0.61 & 0.54 \\
+O-21 & construction blueprint & ID & Spatiality & \textbf{0.80} & 0.62 & 0.24 & 0.55 \\
+O-55 & rotation & ID & Spatiality & \textbf{0.68} & 0.64 & 0.41 & 0.58 \\
+O-15 & ball bounces given time & ID & Knowledge & \textbf{0.68} & 0.55 & 0.54 & 0.59 \\
+G-218 & identify largest angle in triangle & OOD & Perception & 0.20 & 0.60 & \textbf{1.00} & 0.60 \\
+G-15 & grid avoid obstacles & ID & Spatiality & 0.41 & \textbf{0.81} & 0.61 & 0.61 \\
+O-23 & domino chain branch path prediction & ID & Knowledge & \textbf{0.83} & 0.48 & 0.59 & 0.63 \\
+\bottomrule
+\end{tabular}
+\end{table*}
