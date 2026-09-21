@@ -2,9 +2,12 @@
 """Build the data and media that the static site in docs/ serves.
 
     python3 docs/build_site.py [--media-index PATH] [--force] [--jobs N] [--no-media] [--open-per-task N]
+    python3 docs/build_site.py --check        # self-check only: nothing is rewritten
 
 Contract: paper/figures/STYLE.md §11 (data) and §12 (size budget). This script is the only writer of
-docs/data, docs/media, docs/paper.pdf and docs/.nojekyll; index.html / style.css / app.js are hand-written.
+docs/data, docs/media, docs/paper.pdf and docs/.nojekyll; the two pages (index.html = grid + inline panel,
+leaderboard.html = table, dumbbell, categories, efficiency), style.css, app.js and leaderboard.js are hand-written.
+The site is served at https://solve-vision-with-code.com/ (and mirrored by GitHub Pages).
 
 Inputs (read-only)
   <media-index>            index.json written by the media export (default ~/Workspace/svc-media/index.json)
@@ -28,13 +31,16 @@ Every mp4 is re-encoded (libx264 main, yuv420p, crf 26, faststart, no audio, nat
 
 Self-check (fails loudly): 100 tasks, 500 instances, 1 500 solve files; every score equals the official
 evaluator's to 1e-9; every task mean equals table4 to 1e-9; every referenced path exists; leaderboard has
-37 rows whose top overall is the CSV maximum (0.923); paper.pdf present; size within the §12 budget.
+37 rows whose top overall is the CSV maximum (0.923); paper.pdf present; size within the §12 budget;
+both pages present with their script and stylesheet, canonical/og:url and the cite URL on the domain, no nav bar.
 """
 import argparse
 import csv
 import datetime as dt
+import importlib.util
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -45,6 +51,10 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 DATA = DOCS / "data"
 MEDIA = DOCS / "media"
+SITE = "https://solve-vision-with-code.com/"
+# page → (its script, canonical URL). Hand-written; the self-check only verifies they are consistent.
+PAGES = {"index.html": ("app.js", SITE), "leaderboard.html": ("leaderboard.js", SITE + "leaderboard.html")}
+HAND_WRITTEN = ["index.html", "leaderboard.html", "style.css", "app.js", "leaderboard.js"]
 
 LANES = {
     "codex": {"label": "Codex / gpt-6-astra", "kind": "agent", "run": "codex-gpt-6-astra"},
@@ -176,6 +186,75 @@ def build_tasks(index, args):
 
 
 # ---------------------------------------------------------------- self-check
+def banned_patterns():
+    """The banned-string list is defined once, in docs/verify-site.py (DESIGN.md §7): import it, never copy it."""
+    f = DOCS / "verify-site.py"
+    if not f.is_file():
+        die("docs/verify-site.py missing (it defines the banned-string list)")
+    spec = importlib.util.spec_from_file_location("verify_site", f)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    for name in ("BANNED", "BANNED_PATTERNS", "BANNED_STRINGS", "BANNED_RE"):
+        pats = getattr(mod, name, None)
+        if pats:
+            break
+    else:
+        die("docs/verify-site.py defines no BANNED list")
+    if isinstance(pats, (str, re.Pattern)):
+        pats = [pats]
+    out = []
+    for p in pats:
+        if isinstance(p, re.Pattern):
+            out.append(p)
+        else:
+            try:
+                out.append(re.compile(p, re.I))
+            except re.error:
+                out.append(re.compile(re.escape(p), re.I))
+    return out
+
+
+def check_pages():
+    """The hand-written files: present, free of banned strings, wired to style.css and their script, on the domain, no nav bar."""
+    for name in ("style.css", ".nojekyll"):
+        if not (DOCS / name).is_file():
+            die(f"docs/{name} missing")
+    pats = banned_patterns()
+    for name in HAND_WRITTEN:
+        f = DOCS / name
+        if not f.is_file():
+            die(f"docs/{name} missing")
+        for i, line in enumerate(f.read_text().splitlines(), 1):
+            for p in pats:
+                if p.search(line):
+                    die(f"banned string in docs/{name}:{i} (pattern {p.pattern!r})")
+    for page, (script, canonical) in PAGES.items():
+        f = DOCS / page
+        if not f.is_file():
+            die(f"docs/{page} missing")
+        html = f.read_text()
+        if not (DOCS / script).is_file():
+            die(f"docs/{script} missing (loaded by {page})")
+        if f'src="{script}"' not in html:
+            die(f"{page} does not load {script}")
+        if 'href="style.css"' not in html:
+            die(f"{page} does not load style.css")
+        if f'<link rel="canonical" href="{canonical}">' not in html or f'<meta property="og:url" content="{canonical}">' not in html:
+            die(f"{page}: canonical / og:url must be {canonical}")
+        if page == "index.html" and "url     = {" + SITE + "}" not in html:
+            die(f"{page}: the cite block must point at {SITE}")
+        if "<nav" in html:
+            die(f"{page} still has a nav bar")
+        if page != "index.html" and ('href="./"' not in html or 'href="index.html#cite"' not in html):
+            die(f"{page} must link back to the home page (h1 → ./, Cite → index.html#cite)")
+        if page != "leaderboard.html" and 'href="leaderboard.html"' not in html:
+            die(f"{page} does not link to leaderboard.html")
+        if "index.html" == page and ('id="grid"' not in html or 'id="filters"' not in html):
+            die("index.html has no #grid / #filters (app.js contract)")
+        if "leaderboard.html" == page and 'id="lb"' not in html:
+            die("leaderboard.html has no #lb table")
+
+
 def official_scores(run):
     j = json.load(open(ROOT / "bench/results" / run / f"{run}_vbvr_results.json"))
     return {(s["task_name"], Path(s["video_file"]).stem): s["score"] for s in j["samples"]}
@@ -242,6 +321,7 @@ def self_check(doc, lb):
         die(f"leaderboard top row {rows[0]} != CSV best {csv_best}")
     if not (DOCS / "paper.pdf").is_file():
         die("docs/paper.pdf missing")
+    check_pages()
 
     size = lambda p: sum(f.stat().st_size for f in Path(p).rglob("*") if f.is_file()) / 1e6
     media_mb, data_mb = size(MEDIA), size(DATA)
@@ -266,7 +346,14 @@ def main():
     ap.add_argument("--jobs", type=int, default=max(2, (os.cpu_count() or 4) - 2))
     ap.add_argument("--no-media", action="store_true", help="only rewrite the JSON (media must already exist for the self-check)")
     ap.add_argument("--open-per-task", type=int, default=2, help="open-lane instances shipped per task per lane (STYLE.md §12: at most 2)")
+    ap.add_argument("--check", action="store_true", help="run the self-check on docs/ as it is; write nothing")
     args = ap.parse_args()
+
+    if args.check:
+        doc = json.load(open(DATA / "tasks.json"))
+        lb = json.load(open(DATA / "leaderboard.json"))
+        print("SELF-CHECK OK", json.dumps(self_check(doc, lb), indent=1))
+        return
 
     index = json.load(open(args.media_index))
     DATA.mkdir(parents=True, exist_ok=True)

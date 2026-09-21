@@ -211,3 +211,7 @@ The benchmark, evaluator and video-model numbers are from VBVR-Pro (arXiv 2608.2
 ## License
 
 See `LICENSE`. Research and non-commercial use; contact the copyright holder for anything else.
+
+## Agent Activity Log
+
+- 2026-09-20 — Results site (`docs/`) redesigned at Hokin's request in the object-permanence.world shape: hero → task grid → inline per-task panel, separate `docs/leaderboard.html`, canonical URL https://solve-vision-with-code.com/; numbers, data files, media and paper.pdf unchanged. Contract: `docs/DESIGN.md`.

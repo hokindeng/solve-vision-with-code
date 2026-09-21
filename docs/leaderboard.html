@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!--
+DOM contract (Lead 2 owns this file + style.css; SWE-4 owns leaderboard.js, which is the only script here; DESIGN.md §4).
+  hero      #bn-agent #bn-agent-m #bn-video #bn-video-m   filled from data/leaderboard.json exactly as on the home page
+  table     #lb        thead th.sortable[data-k=rank|model|agent|overall|in_domain|out_of_domain|videos] (JS toggles .asc/.desc + aria-sort)
+                       tbody rows: tr.kind-agent|kind-open|kind-video > td.n.rank | td > .mname(.dot .t(.k)) | td.agentcol.hide-m | td.n(.bar .trk .fil + b) | td.n | td.n | td.n.hide-m
+  dumbbell  #dumbbell-card > svg#dumbbell (JS sets viewBox/width/height, keeps the <title> child; .narrow under 640 px)
+  tables    #cats / #eff  (thead + tbody filled by JS)  button.showall[data-for=cats|eff]
+  footer    two lines only — no bib block here (Cite → index.html#cite), so #bib/#copybib are absent on this page
+Data: data/leaderboard.json {rows, categories, efficiency} only; tasks.json is never loaded here.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leaderboard — Solve Vision with Code</title>
+<meta name="description" content="Solve Vision with Code leaderboard: 37 systems on VBVR-Pro-Bench (video setting) — three closed-model coding agents, 24 open-weight coding agents and the published video models; In-Domain vs Out-of-Domain, categories and efficiency.">
+<meta name="author" content="Hokin Deng">
+<meta property="og:title" content="Leaderboard — Solve Vision with Code">
+<meta property="og:description" content="37 systems on VBVR-Pro-Bench: coding agents vs video models, In-Domain vs Out-of-Domain, categories and efficiency.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://solve-vision-with-code.com/leaderboard.html">
+<link rel="canonical" href="https://solve-vision-with-code.com/leaderboard.html">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23000'/%3E%3Cpath d='M22 18l-12 14 12 14M42 18l12 14-12 14M36 14l-8 36' stroke='%232997ff' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="hero" id="top">
+  <h1 class="grad"><a href="./">Solve Vision with Code</a></h1>
+  <h2>Coding Agents Are Stronger Visual Reasoners Than Video Models</h2>
+  <p class="lead">A coding agent is given the <b>first frame</b> and the <b>prompt</b> of a VBVR-Pro-Bench task and writes a program that renders the answer video; the video is scored by the benchmark's official evaluator, so it sits on the same leaderboard as the video generation models.</p>
+
+  <div class="bignums" id="bignums" aria-live="polite">
+    <div class="bn agent"><div class="v" id="bn-agent">—</div><div class="l">best coding agent</div><div class="m" id="bn-agent-m">&nbsp;</div></div>
+    <div class="vs">VS</div>
+    <div class="bn video"><div class="v" id="bn-video">—</div><div class="l">best video model</div><div class="m" id="bn-video-m">&nbsp;</div></div>
+  </div>
+
+  <div class="hero-links">
+    <a class="hbtn" href="paper.pdf" target="_blank" rel="noopener">Paper</a>
+    <a class="hbtn" href="https://github.com/hokindeng/solve-vision-with-code" target="_blank" rel="noopener">Code</a>
+    <a class="hbtn" href="https://huggingface.co/datasets/Video-Reason/VBVR-Pro-Bench" target="_blank" rel="noopener">Benchmark</a>
+    <a class="hbtn cur" href="leaderboard.html" aria-current="page">Leaderboard</a>
+    <a class="hbtn" href="index.html#cite">Cite</a>
+  </div>
+  <div class="hero-rule"></div>
+</header>
+
+<main class="wrap">
+  <section id="leaderboard" aria-labelledby="lb-h">
+    <h3 id="lb-h" class="sec">Leaderboard <span>VBVR-Pro-Bench, video setting · 100 tasks × 5 instances · official evaluator</span></h3>
+    <p class="sub">Mean official-evaluator score over all 500 instances; an instance without a video counts 0. Video-model rows are the published VBVR-Pro-Bench numbers. Click a header to sort.</p>
+    <div class="legend" role="note"><span><i class="agent"></i>coding agent</span><span><i class="open"></i>coding agent, open weights</span><span><i class="video"></i>video model</span></div>
+    <div class="tscroll">
+      <table id="lb">
+        <thead><tr>
+          <th class="n sortable" data-k="rank" scope="col" tabindex="0">Rank</th>
+          <th class="sortable" data-k="model" scope="col" tabindex="0">Model</th>
+          <th class="sortable hide-m" data-k="agent" scope="col" tabindex="0">Agent</th>
+          <th class="n sortable" data-k="overall" scope="col" tabindex="0">Overall</th>
+          <th class="n sortable" data-k="in_domain" scope="col" tabindex="0">ID</th>
+          <th class="n sortable" data-k="out_of_domain" scope="col" tabindex="0">OOD</th>
+          <th class="n sortable hide-m" data-k="videos" scope="col" tabindex="0">Videos</th>
+        </tr></thead>
+        <tbody><tr><td colspan="7"><div class="status">Loading leaderboard…</div></td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="ood" aria-labelledby="ood-h">
+    <h3 id="ood-h" class="sec">Out-of-domain vs in-domain <span>one row per system with at least one video</span></h3>
+    <p class="sub">Each row is one system; the stem runs from its In-Domain score to its Out-of-Domain score. Every coding agent above the noise floor scores higher out of domain than in domain, without training on any family; every video model trained on the In-Domain families falls out of domain. Systems with at least one video.</p>
+    <div class="legend"><span><i class="agent"></i>coding agent</span><span><i class="open"></i>open weights</span><span><i class="video"></i>video model</span><span>○ In-Domain &nbsp;● Out-of-Domain</span></div>
+    <div class="card" id="dumbbell-card"><svg class="dumb" id="dumbbell" role="img" aria-labelledby="dumbbell-title"><title id="dumbbell-title">In-Domain to Out-of-Domain score per system</title></svg></div>
+  </section>
+
+  <section id="categories" aria-labelledby="cat-h">
+    <h3 id="cat-h" class="sec">Categories &amp; efficiency <span>coding agents only</span></h3>
+    <p class="sub">Per-category score for the coding agents (five VBVR-Pro-Bench categories) and how much work each agent did per instance: videos produced, tool-use rate, tool calls, timeouts, median seconds and tokens.</p>
+    <div class="two">
+      <div class="card small">
+        <div class="tscroll"><table id="cats"><thead></thead><tbody></tbody></table></div>
+        <button class="showall" data-for="cats" type="button">Show all agents</button>
+      </div>
+      <div class="card small">
+        <div class="tscroll"><table id="eff"><thead></thead><tbody></tbody></table></div>
+        <button class="showall" data-for="eff" type="button">Show all agents</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Code, results and this page are released for research and non-commercial use only; see the <a href="https://github.com/hokindeng/solve-vision-with-code/blob/public/LICENSE">LICENSE</a>. VBVR-Pro-Bench and its evaluator belong to their authors. Cite: <a href="index.html#cite">index.html#cite</a>.</p>
+  <p>Hokin Deng · <a href="https://hokindeng.com">hokindeng.com</a> · <a href="https://github.com/hokindeng/solve-vision-with-code">GitHub</a></p>
+</footer>
+
+<script src="leaderboard.js" defer></script>
+</body>
+</html>
