@@ -6,7 +6,7 @@ that renders the answer video; the video is scored by the benchmark's official r
 its score sits on the same leaderboard as the video generation models. This repository holds the agent
 harness (`bench/`), the per-lane evaluator results and run statistics behind every number in the paper,
 the paper source (`paper/`), and the results site (`docs/`). Every agent video and program of the three
-closed-model lanes can be watched at https://hokindeng.github.io/solve-vision-with-code/.
+closed-model lanes can be watched at https://solve-vision-with-code.com/.
 Project page: https://hokindeng.com.
 
 ## Results
@@ -49,7 +49,7 @@ Every coding agent above the noise floor, closed or open, scores higher Out-of-D
 training on any family; every video model trained on the In-Domain families scores lower Out-of-Domain, while
 the untrained video models move by less than 0.1.
 
-The site https://hokindeng.github.io/solve-vision-with-code/ shows the same leaderboard with the
+The site https://solve-vision-with-code.com/ shows the same leaderboard with the
 category and efficiency tables, the per-task heatmap, and every video and `solve.py` of the three
 closed-model lanes next to the ground truth.
 
@@ -201,7 +201,7 @@ access. The layout of everything, public or not, is in `DATA_MANIFEST.md`.
   author  = {Deng, Hokin and Zhao, Zehong and Ji, Ran and Wang, Maijunxian and Gao, Qingying and
              Yu, Fengyuan and Jiang, Zhengze and Zhang, Yilan},
   year    = {2026},
-  url     = {https://hokindeng.github.io/solve-vision-with-code/},
+  url     = {https://solve-vision-with-code.com/},
   note    = {Code and data: https://github.com/hokindeng/solve-vision-with-code}
 }
 ```
@@ -215,3 +215,4 @@ See `LICENSE`. Research and non-commercial use; contact the copyright holder for
 ## Agent Activity Log
 
 - 2026-09-20 — Results site (`docs/`) redesigned at Hokin's request in the object-permanence.world shape: hero → task grid → inline per-task panel, separate `docs/leaderboard.html`, canonical URL https://solve-vision-with-code.com/; numbers, data files, media and paper.pdf unchanged. Contract: `docs/DESIGN.md`.
+- 2026-09-21 — Results site moved to its own repository (site now served only at https://solve-vision-with-code.com/); `docs/` here is a redirect; README links updated.
