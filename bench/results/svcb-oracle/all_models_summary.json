@@ -1,0 +1,14 @@
+{
+  "svcb-oracle": {
+    "In_Domain": 0.9968085286790728,
+    "Out_of_Domain": 0.9985590024476072,
+    "overall": 0.99768376556334,
+    "by_category": {
+      "Abstraction": 0.9957403851813502,
+      "Perception": 0.9995188033150667,
+      "Spatiality": 0.9947303983997257,
+      "Transformation": 0.9987441263358445,
+      "Knowledge": 0.9981204544794653
+    }
+  }
+}

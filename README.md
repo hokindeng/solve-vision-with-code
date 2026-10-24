@@ -130,8 +130,12 @@ python -m venv ~/venv-eval && ~/venv-eval/bin/pip install -r VBVR-Pro-Bench/requ
 > `norfair` and `easyocr`. In an environment that violates this, four evaluators (G-5, G-8, O-18, O-19)
 > silently return 0 for every video, ground truth included, with no error in the log. Keep the scoring venv
 > separate from any numpy-2 / OpenCV-5 generator venv, and before scoring a lane score the kit's own
-> ground-truth videos: every one must come back 1.0. A task that is exactly 0.0 for every model is an
-> evaluator problem until proven otherwise.
+> ground-truth videos (`python3 bench/make_oracle_lane.py`, then score `bench/outputs/svcb-oracle` like any
+> lane): the measured ceiling is 0.9977 overall — 370/500 instances at exactly 1.0, minimum 0.918 — because
+> the evaluator reads symbolic state back from H.264-compressed pixels (chroma subsampling, tracking under
+> occlusion, OCR, graded metrics each concede a small tolerance). A healthy run scores ≈1.0 per instance
+> with zero `no prediction` errors; a task that is exactly 0.0 for every model is an evaluator problem
+> until proven otherwise. Per-instance ceiling values: `bench/results/svcb-oracle/`.
 
 **5. Tables.**
 
